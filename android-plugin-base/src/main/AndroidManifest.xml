@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:name="murglar.plugin" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${pluginFullName}">
+
+        <meta-data
+            android:name="murglar.plugin.id"
+            android:value="${pluginId}" />
+        <meta-data
+            android:name="murglar.plugin.name"
+            android:value="${pluginName}" />
+        <meta-data
+            android:name="murglar.plugin.murglarClass"
+            android:value="${pluginMurglarClass}" />
+        <meta-data
+            android:name="murglar.plugin.version"
+            android:value="${pluginVersion}" />
+        <meta-data
+            android:name="murglar.plugin.libVersion"
+            android:value="${pluginLibVersion}" />
+
+        <activity
+            android:name="com.badmanners.murglar.plugin.LinkRedirectActivity"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+
+        <receiver
+            android:name="com.badmanners.murglar.plugin.NoOpDiscoverableReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.badmanners.murglar.action.DISCOVER_PLUGIN" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+    <queries>
+        <intent>
+            <action android:name="com.badmanners.murglar.action.VIEW" />
+        </intent>
+    </queries>
+
+</manifest>
