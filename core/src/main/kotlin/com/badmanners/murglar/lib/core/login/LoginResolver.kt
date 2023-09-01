@@ -1,9 +1,11 @@
 package com.badmanners.murglar.lib.core.login
 
 import com.badmanners.murglar.lib.core.login.CredentialsLoginVariant.Credential
+import com.badmanners.murglar.lib.core.network.NetworkMiddleware
 import com.badmanners.murglar.lib.core.service.Murglar
 import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import com.badmanners.murglar.lib.core.webview.WebViewProvider
+import com.badmanners.murglar.lib.core.webview.WebViewProvider.UrlLoadPolicyResolver
 
 
 /**
@@ -36,6 +38,19 @@ interface LoginResolver {
     /**
      * Performs login through a web view.
      *
+     * Login process:
+     * 1. Client app gets [webLoginVariants] and provides them to user
+     * 2. User selects one
+     * 3. Client app calls this method with selected loginVariantId
+     * 4. This method calls inside [WebViewProvider.startWebView] with required params
+     * 5. User performs login in the webview
+     * 6. Webview detects end of login according to the [UrlLoadPolicyResolver] and sync cookies from the webview
+     * to the [NetworkMiddleware]
+     * 7. Control returns to this method and if login successful this method performs login:
+     *    - makes login requests through [NetworkMiddleware]
+     *    - or extracts cookies/tokens/keys from [NetworkMiddleware] cookies
+     *    - saves neccessary data to the [PreferenceMiddleware]
+     *
      * @param loginVariantId user selected [WebLoginVariant.id].
      * @param webViewProvider web-view provider.
      * @return true if successful, false if login cancelled
@@ -54,17 +69,17 @@ interface LoginResolver {
      * Performs credentials login.
      *
      * Login process:
-     *  1. Client app gets [credentialsLoginVariants] and provides them to user
-     *  2. User selects one
-     *  3. Client app provides to user UI with inputs, based on [CredentialsLoginVariant.credentials]
-     *  4. User fills inputs with actual credentials
-     *  5. Client app passes selected variant id and user input args to this method
-     *  6. Method performs login related actions and returns [CredentialLoginStep]. If it is
+     * 1. Client app gets [credentialsLoginVariants] and provides them to user
+     * 2. User selects one
+     * 3. Client app provides to user UI with inputs, based on [CredentialsLoginVariant.credentials]
+     * 4. User fills inputs with actual credentials
+     * 5. Client app passes selected variant id and user input args to this method
+     * 6. Method performs login related actions and returns [CredentialLoginStep]. If it is
      *    - [TwoFARequiredStep] - client app provides to user UI with label with help text and input for 2FA code
      *    - [CaptchaRequiredStep] - client app provides to user UI with image of captcha and input for captcha value
      *    - [SuccessfulLogin] - client app finishes login
-     *  7. Client app passes selected variant id and user input args + callbackArgs + 2FA/captcha arg to this method
-     *  8. Go to p.6
+     * 7. Client app passes selected variant id and user input args + callbackArgs + 2FA/captcha arg to this method
+     * 8. Go to p.6
      *
      * @param loginVariantId user selected [CredentialsLoginVariant.id].
      * @param args map of [[key -> value]] args, contain ALL available data

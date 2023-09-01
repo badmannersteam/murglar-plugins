@@ -32,7 +32,7 @@ interface Murglar<Track : BaseTrack> {
     }
 
     /**
-     * Unique id for this [Murglar] (e.g. 'dzr', 'ynd', 'sc').
+     * Unique id of this [Murglar] (e.g. 'dzr', 'ynd', 'sc').
      */
     val id: String
 

@@ -1,6 +1,5 @@
 package com.badmanners.murglar.lib.core.utils
 
-import com.badmanners.murglar.lib.core.model.node.Node
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.text.StringEscapeUtils
 import java.net.HttpCookie

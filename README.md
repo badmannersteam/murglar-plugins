@@ -11,7 +11,7 @@ Every plugin consists of 2 parts:
   app/telegram bot/etc)
 - **android** part - apk, that bundles core part for use with Murglar on Android
 
-This repo contains following parts of plugins system:
+This repo contains following parts of the plugins system:
 
 - [core](core) - main API module, that provides plugin interfaces and base implementations of these interfaces
 - [core-plugin-gradle-plugin](core-plugin-gradle-plugin) - Gradle plugin for developing core part
@@ -35,94 +35,92 @@ Versioning of the `murglar-plugins` and plugins itself consists of 2 parts - `<m
 - Minor part is the actual version of the plugin system (incremented by us) or plugin itself (incremented by the plugin
   author) when new features are added and no new breaking changes are presented.
 
-So for the correct plugins execution their authors must depends on the latest version of this repo, at least on the
+So for the correct plugins execution their authors must depend on the latest version of this repo, at least on the
 major part.
 
 ## Installation
 
-> Replace all of the following `<plugin_name>` parts with the actual name of your plugin/service.
+> Replace all the following `<plugin_name>` parts with the actual name of your plugin/service.
 
-Create gradle project with 2 modules:
+1. Install JDK 17 (if not installed).
 
-- `<plugin_name>-core`
-- `<plugin_name>-android`
+2. Create gradle project with 2 modules:
+    - `<plugin_name>-core`
+    - `<plugin_name>-android`
 
-Add to the root `settings.gradle.kts`:
+3. Add to the root `settings.gradle.kts`:
+   ```kotlin
+   pluginManagement {
+       repositories {
+           gradlePluginPortal()                                        // for kotlin gradle plugins
+           google()                                                    // for android gradle plugin
+           maven { url = java.net.URI.create("https://jitpack.io") }   // for murglar gradle plugins 
+       }
+       resolutionStrategy {
+           eachPlugin {
+               // workaround for requesting gradle plugins from plain maven repository (jitpack)
+               // with `plugins {...}` block syntax
+               val prefix = "murglar-gradle-plugin-"
+               if (requested.id.id.startsWith(prefix)) {
+                   val artifactId = "${requested.id.id.substringAfter(prefix)}-plugin-gradle-plugin"
+                   useModule("com.github.badmannersteam.murglar-plugins:$artifactId:${requested.version}")
+               }
+           }
+       }
+   }
+   ```
 
-```kotlin
-pluginManagement {
-    repositories {
-        gradlePluginPortal()                                        // for kotlin gradle plugins
-        google()                                                    // for android gradle plugin
-        maven { url = java.net.URI.create("https://jitpack.io") }   // for murglar gradle plugins 
-    }
-    resolutionStrategy {
-        eachPlugin {
-            // workaround for requesting gradle plugins from plain maven repository (jitpack)
-            // with `plugins {...}` block syntax
-            val prefix = "murglar-gradle-plugin-"
-            if (requested.id.id.startsWith(prefix)) {
-                val artifactId = "${requested.id.id.substringAfter(prefix)}-plugin-gradle-plugin"
-                useModule("com.github.badmannersteam.murglar-plugins:$artifactId:${requested.version}")
-            }
-        }
-    }
-}
-```
+4. Add to the `build.gradle.kts` of the `<plugin_name>-core` module:
+   ```kotlin
+   plugins {
+       id("murglar-gradle-plugin-core") version "<latest_version>"       // fix this to actual version
+   }
+   
+   murglarPlugin {
+       id = "sample"                                                     // your plugin id
+       name = "Sample"                                                   // your plugin human-readable name (in English)
+       version = "1"                                                     // plugin version (minor)
+       murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - Murglar implementation class
+   }
+   
+   dependencies {
+       // Custom dependencies, if required.
+       // Core plugin provides by default:
+       // - kotlin-stdlib
+       // - kotlin-test
+       // - kotlinx-serialization-json
+       // - threetenbp - java 8 time backport
+       // - apache commons-text
+   }
+   ```
 
-Add to the `build.gradle.kts` of the `<plugin_name>-core` module:
-
-```kotlin
-plugins {
-    id("murglar-gradle-plugin-core") version "<latest_version>"       // fix this to actual version
-}
-
-murglarPlugin {
-    id = "sample"                                                     // your plugin id
-    name = "Sample"                                                   // your plugin human readable name (in English)
-    version = "1"                                                     // plugin version (minor)
-    murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - Murglar implementation class
-}
-
-dependencies {
-    // Custom dependencies, if required.
-    // Core plugin provides by default:
-    // - kotlin-stdlib
-    // - kotlin-test
-    // - kotlinx-serialization-json
-    // - threetenbp - java 8 time backport
-    // - apache commons-text
-}
-```
-
-Add to the `build.gradle.kts` of the `<plugin_name>-android` module:
-
-```kotlin
-plugins {
-    id("murglar-gradle-plugin-android") version "<latest_version>"  // fix this to actual version
-}
-
-murglarAndroidPlugin {
-    id = "sample"
-    name = "Sample"
-    version = 1
-    murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"
-}
-
-dependencies {
-    implementation(project(":<plugin_name>-core"))  // fix this to your 'core' project name
-}
-```
+5. Add to the `build.gradle.kts` of the `<plugin_name>-android` module:
+   ```kotlin
+   plugins {
+       id("murglar-gradle-plugin-android") version "<latest_version>"  // fix this to actual version
+   }
+   
+   murglarAndroidPlugin {
+       id = "sample"
+       name = "Sample"
+       version = 1
+       murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"
+   }
+   
+   dependencies {
+       implementation(project(":<plugin_name>-core"))  // fix this to your 'core' project name
+   }
+   ```
 
 ### Android module additional requirements:
 
-- Install [Android SDK](https://developer.android.com/studio) (if not installed).
-- Create a copy of the `local.template.properties` with the name `local.properties` and place it at the root of your
-  project.
-- Place your `keystore.jks` with the android signing keys at the root of your project (or set the absolute path to the
-  keystore in the `local.properties`). If you don't have one -
-  [generate it](https://stackoverflow.com/questions/66981453/how-can-i-create-keystore-in-android-studio).
-- Fix SDK path/keystore path/alias/passwords in the `local.properties`.
+1. Install [Android SDK](https://developer.android.com/studio) (if not installed).
+2. Create a copy of the `local.template.properties` with the name `local.properties` and place it at the root of your
+   project.
+3. Place your `keystore.jks` with the android signing keys at the root of your project (or set the absolute path to the
+   keystore in the `local.properties`). If you don't have one -
+   [generate it](https://stackoverflow.com/questions/66981453/how-can-i-create-keystore-in-android-studio).
+4. Fix SDK path/keystore path/alias/passwords in the `local.properties`.
 
 ## Usage
 
@@ -130,10 +128,20 @@ dependencies {
    [Murglar](core/src/main/kotlin/com/badmanners/murglar/lib/core/service/Murglar.kt),
    [LoginResolver](core/src/main/kotlin/com/badmanners/murglar/lib/core/login/LoginResolver.kt) and
    [NodeResolver](core/src/main/kotlin/com/badmanners/murglar/lib/core/node/NodeResolver.kt) interfaces.
+    - Use [BaseMurglar](core/src/main/kotlin/com/badmanners/murglar/lib/core/service/BaseMurglar.kt) and
+      [BaseNodeResolver](core/src/main/kotlin/com/badmanners/murglar/lib/core/node/BaseNodeResolver.kt) as a base for
+      your implementations.
+    - Take into account that implementations of
+      [PreferenceMiddleware](core/src/main/kotlin/com/badmanners/murglar/lib/core/preference/PreferenceMiddleware.kt),
+      [NetworkMiddleware](core/src/main/kotlin/com/badmanners/murglar/lib/core/network/NetworkMiddleware.kt),
+      [NotificationMiddleware](core/src/main/kotlin/com/badmanners/murglar/lib/core/notification/NotificationMiddleware.kt)
+      and [LoggerMiddleware](core/src/main/kotlin/com/badmanners/murglar/lib/core/log/LoggerMiddleware.kt) will be
+      provided for use from the host app in the constructor of your
+      [Murglar](core/src/main/kotlin/com/badmanners/murglar/lib/core/service/Murglar.kt) implementation.
 2. Complete `<plugin_name>-android` module with:
     - 24dp vector icon of the service in the `<plugin_name>-android/src/main/res/drawable/icon.xml`
     - `AndroidManifest.xml` in the `<plugin_name>-android/src/main/AndroidManifest.xml` - can be empty
-   (with only `<manifest/>` tag) if your plugin doesn't support http/deeplinks or contain intent-filters otherwise:
+      (with only `<manifest/>` tag) if your plugin doesn't support http/deeplinks or contain intent-filters otherwise:
     ```xml
     <manifest xmlns:android="http://schemas.android.com/apk/res/android">
         <application>
@@ -161,13 +169,13 @@ dependencies {
                     <data android:pathPrefix="/" />
                 </intent-filter>
             </activity>
-    </application>
+        </application>
     </manifest>
     ```
 3. Run `./gradlew clean build`.
 4. Grab your plugins:
-   - JAR - `<plugin_name>-core/build/libs/murglar-plugin-<plugin_name>-<version>.jar`
-   - APK - `<plugin_name>-android/build/outputs/apk/release/murglar-plugin-<plugin_name>-<version>.apk`
+    - JAR - `<plugin_name>-core/build/libs/murglar-plugin-<plugin_name>-<version>.jar`
+    - APK - `<plugin_name>-android/build/outputs/apk/release/murglar-plugin-<plugin_name>-<version>.apk`
 
 ## Sample
 

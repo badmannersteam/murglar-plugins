@@ -10,7 +10,7 @@ abstract class RuMessages : Messages {
     override val anErrorHasOccurred = "Произошла ошибка: "
     override val sessionUpdateFailed = "Не удалось обновить сессию, перезайдите в аккаунт!"
     override val youAreLoggedIn get() = "Вы залогинены в $serviceName"
-    override val youAreNotLoggedIn get() = "Вы не залогинены в  $serviceName"
+    override val youAreNotLoggedIn get() = "Вы не залогинены в $serviceName"
     override val trackHasNoLyrics = "Нет текста песни"
     override val sourceUrlUnavailable = "URL трека недоступен!"
     override val myTracks = "Мои треки"

@@ -29,7 +29,7 @@ dependencyResolutionManagement {
             version("commons-text", "1.8")
 
             version("kotlin", "1.8.22")
-            version("android-build-plugin", "8.1.0")
+            version("android-build-plugin", "8.1.1")
             version("buildconfig", "3.1.0")
 
             version("min-sdk", "21")

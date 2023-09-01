@@ -124,8 +124,8 @@ interface NodeResolver {
      * Determining the like status for any node:
      *  * get mapping from this method
      *  * get (and cache) content of all roots, listed in mapping
-     *  * for every node call [Node.getNodeType] and find a corresponding root node from mapping
-     *  * check that found list contains or not the [Node] with the equal [Node.getComparableId]
+     *  * for every node call [Node.nodeType] and find a corresponding root node from mapping
+     *  * check that found list contains or not the [Node] with the equal [Node.comparableId]
      *  * if contains - node already liked, if not - node can be liked
      *
      *

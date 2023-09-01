@@ -1,6 +1,7 @@
 package com.badmanners.murglar.lib.core.provider.cover
 
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
+import com.badmanners.murglar.lib.core.provider.ProviderException
 import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 
 

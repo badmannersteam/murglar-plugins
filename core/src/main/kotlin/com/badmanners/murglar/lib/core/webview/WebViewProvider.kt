@@ -11,6 +11,7 @@ interface WebViewProvider {
 
     /**
      * Performs web login through some kind of WebView.
+     * This method is blocking!
      *
      * @param enableJS              whether JavaScript should be enabled or disabled
      * @param userAgent             required useragent or null for default
