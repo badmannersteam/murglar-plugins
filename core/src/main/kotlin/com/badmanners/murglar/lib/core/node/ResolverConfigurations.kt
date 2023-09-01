@@ -51,7 +51,7 @@ sealed interface EntityConfiguration {
     val relatedPaths: RelatedNodePathsGenerator?
     val like: LikeConfig?
     val urlPatterns: List<String>
-    val events: List<EventConfig>
+    val events: List<EventConfig<*>>
 }
 
 /**
@@ -112,7 +112,7 @@ data class MappedEntity(
     override val relatedPaths: RelatedNodePathsGenerator? = null,
     override val like: LikeConfig? = null,
     override val urlPatterns: List<String> = emptyList(),
-    override val events: List<EventConfig> = emptyList(),
+    override val events: List<EventConfig<*>> = emptyList(),
     override val nodeSupplier: NodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null,
     override val nodeWithContentSupplier: NodeWithContentSupplier? = null
@@ -128,7 +128,7 @@ data class UnmappedEntity(
     override val type: String,
     override val relatedPaths: RelatedNodePathsGenerator? = null,
     override val like: LikeConfig? = null,
-    override val events: List<EventConfig> = emptyList()
+    override val events: List<EventConfig<*>> = emptyList()
 ) : GenericConfiguration, EntityConfiguration {
     override val pattern: String = UNMAPPED
     override val urlPatterns: List<String> = emptyList()
@@ -150,7 +150,7 @@ data class Track(
     override val relatedPaths: RelatedNodePathsGenerator? = null,
     override val like: LikeConfig? = null,
     override val urlPatterns: List<String> = emptyList(),
-    override val events: List<EventConfig> = emptyList(),
+    override val events: List<EventConfig<*>> = emptyList(),
     override val nodeSupplier: NodeSupplier? = null
 ) : GenericConfiguration, EntityConfiguration {
     override val nodeContentSupplier = null
@@ -163,9 +163,9 @@ data class LikeConfig(
     val likeFunction: LikeFunction
 )
 
-data class EventConfig(
-    val eventClass: KClass<out Event>,
-    val eventHandler: EventHandler,
+data class EventConfig<E: Event>(
+    val eventClass: KClass<E>,
+    val eventHandler: EventHandler<E>,
 )
 
 fun interface RootNodeSupplier {
@@ -215,9 +215,9 @@ fun interface LikeFunction {
     fun Node.like(like: Boolean)
 }
 
-fun interface EventHandler {
+fun interface EventHandler<E: Event> {
     @WorkerThread
-    fun Node.handleEvent(event: Event)
+    fun Node.handleEvent(event: E)
 }
 
 fun interface RelatedNodePathsGenerator {

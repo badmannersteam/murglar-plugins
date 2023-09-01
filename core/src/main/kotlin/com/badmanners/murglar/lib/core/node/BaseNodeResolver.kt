@@ -120,7 +120,8 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
                         check((isPlayerEvent && type == TRACK) || isCustomAction) {
                             "Wrong event class $eventClass in $it!"
                         }*/
-                        eventHandlers += EventHandlerConfiguration(type, eventClass, config.eventHandler)
+                        eventHandlers +=
+                            EventHandlerConfiguration(type, eventClass, config.eventHandler as EventHandler<Event>)
                     }
                     it.urlPatterns.forEach { urlPattern ->
                         checkNotNull(nodeSupplier) { "urlPatterns presented, but no nodeSupplier in $it!" }
@@ -447,7 +448,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         data class EventHandlerConfiguration(
             val nodeType: String,
             val eventClass: KClass<out Event>,
-            val eventHandler: EventHandler
+            val eventHandler: EventHandler<Event>
         )
     }
 }
