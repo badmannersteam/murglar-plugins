@@ -271,9 +271,8 @@ class PassiveExpiringMap<K, V> private constructor(
      * @param expirationTimeObject the expiration time value retrieved from [.expirationMap], can be null.
      * @return `true` if `expirationTimeObject` is  0  and `expirationTimeObject` &lt; `now`, `false` otherwise.
      */
-    private fun isExpired(now: Long, expirationTimeObject: Long): Boolean {
-        return expirationTimeObject in 0..now
-    }
+    private fun isExpired(now: Long, expirationTimeObject: Long?) =
+        expirationTimeObject?.let { it in 0..now } ?: false
 
     /**
      * All expired entries are removed from the map prior to returning the key set.
@@ -352,7 +351,7 @@ class PassiveExpiringMap<K, V> private constructor(
      */
     private fun removeIfExpired(key: K, nowMillis: Long) {
         val expirationTimeObject = expirationMap[key]
-        if (isExpired(nowMillis, expirationTimeObject!!)) {
+        if (isExpired(nowMillis, expirationTimeObject)) {
             remove(key)
         }
     }
