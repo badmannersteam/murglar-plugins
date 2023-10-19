@@ -12,6 +12,11 @@ data class NamedPath(
     val name: String,
 
     /**
+     * [NodeType] of the node.
+     */
+    val type: String,
+
+    /**
      * Node path.
      */
     val path: Path
