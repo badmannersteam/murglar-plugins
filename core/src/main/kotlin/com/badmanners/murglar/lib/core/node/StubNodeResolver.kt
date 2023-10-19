@@ -33,6 +33,9 @@ class StubNodeResolver(
     override fun isNodeCacheable(path: Path) =
         throw UnsupportedOperationException("'isNodeCacheable' in stub node resolver")
 
+    override fun isOwnNode(path: Path) =
+        throw UnsupportedOperationException("'isOwnNode' in stub node resolver")
+
     override fun specifySearchableNode(searchableNode: Node, query: String) =
         throw UnsupportedOperationException("'specifySearchableNode' in stub node resolver")
 

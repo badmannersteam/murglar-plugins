@@ -71,6 +71,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         val likes = mutableListOf<LikeConfiguration>()
         val eventHandlers = mutableListOf<EventHandlerConfiguration>()
         val urls = mutableListOf<UrlConfiguration>()
+        val ownRoots = mutableSetOf<String>()
 
         configurations.forEach {
             val pattern = it.pattern
@@ -131,9 +132,12 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
 
                 else -> {}
             }
+
+            if (it is Root && it.isOwn)
+                ownRoots += pattern
         }
 
-        InternalConfiguration(parameters, suppliers, relatedNodes, likes, eventHandlers, urls)
+        InternalConfiguration(parameters, suppliers, relatedNodes, likes, eventHandlers, urls, ownRoots)
     }
 
 
@@ -198,6 +202,11 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
 
         val segment = path[1].lowercase()
         return segment != UNMAPPED && !segment.contains("search")
+    }
+
+    override fun isOwnNode(path: Path): Boolean {
+        requireBelongsToThisResolver(path)
+        return path.size > 1 && path[1] in config.ownRoots
     }
 
     override fun specifySearchableNode(searchableNode: Node, query: String): Node {
@@ -409,7 +418,8 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         val relatedNodes: List<RelatedNodeConfiguration>,
         val likes: List<LikeConfiguration>,
         val eventHandlers: List<EventHandlerConfiguration>,
-        val urls: List<UrlConfiguration>
+        val urls: List<UrlConfiguration>,
+        val ownRoots: Set<String>
     ) {
         data class ParametersConfiguration(
             val pattern: String,

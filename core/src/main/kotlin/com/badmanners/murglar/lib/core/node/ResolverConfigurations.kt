@@ -62,6 +62,10 @@ data class Root(
     val name: () -> String,
     val paging: PagingType,
     val hasSubdirectories: Boolean,
+    /**
+     * @see NodeResolver.isOwnNode
+     */
+    val isOwn: Boolean,
     val rootNodeSupplier: RootNodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null,
     override val nodeWithContentSupplier: NodeWithContentSupplier? = null

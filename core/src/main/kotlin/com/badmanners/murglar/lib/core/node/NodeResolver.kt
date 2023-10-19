@@ -85,6 +85,12 @@ interface NodeResolver {
     fun isNodeCacheable(path: Path): Boolean
 
     /**
+     * Returns true, if [Node] along passed [Path] is an own node - e.g. from the user own library,
+     * not from search/recommendations/radio/etc.
+     */
+    fun isOwnNode(path: Path): Boolean
+
+    /**
      * Converts searchable [Node] and query to the content [Node],
      * which can be passed to the [getNodeContent].
      *
