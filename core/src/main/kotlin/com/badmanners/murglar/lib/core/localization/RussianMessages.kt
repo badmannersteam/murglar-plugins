@@ -1,18 +1,34 @@
 package com.badmanners.murglar.lib.core.localization
 
+import java.util.Locale
+
 
 /**
- * Russian hardcoded implementation of [Messages].
+ * Russian (Русский) implementation of [Messages].
  */
-abstract class RuMessages : Messages {
-    override val illegalResponseFormat = "Ответ содержит невалидный контент: "
-    override val invalidCredentialsFormat = "Неверные учетные данные!"
-    override val anErrorHasOccurred = "Произошла ошибка: "
+abstract class RussianMessages : Messages {
+
+    companion object {
+        val RUSSIAN = Locale.Builder().setLanguage("ru").build()
+    }
+
+    override val loginWith = "Войти через"
+    override val web = "web"
+    override val token = "токен"
+    override val cookie = "cookie"
+    override val email = "email"
+    override val username = "логин"
+    override val phone = "телефон"
+    override val password = "пароль"
+    override val copy = "Скопировать"
+    override val invalidCredentials = "Неверные учетные данные!"
+    override val youAreLoggedIn = "Вы авторизованы"
+    override val youAreNotLoggedIn = "Вы не авторизованы"
     override val sessionUpdateFailed = "Не удалось обновить сессию, перезайдите в аккаунт!"
-    override val youAreLoggedIn get() = "Вы залогинены в $serviceName"
-    override val youAreNotLoggedIn get() = "Вы не залогинены в $serviceName"
-    override val trackHasNoLyrics = "Нет текста песни"
+    override val anErrorHasOccurred = "Произошла ошибка:"
+    override val illegalResponseFormat = "Ответ содержит невалидный контент:"
     override val sourceUrlUnavailable = "URL трека недоступен!"
+    override val trackHasNoLyrics = "Нет текста песни"
     override val myTracks = "Мои треки"
     override val myAlbums = "Мои альбомы"
     override val myArtists = "Мои исполнители"
@@ -36,18 +52,4 @@ abstract class RuMessages : Messages {
     override val similarArtists = "Похожие исполнители"
     override val artists = "Исполнители"
     override val playlists = "Плейлисты"
-    override val copyToken = "Скопировать токен"
-    override fun loginWith(
-        web: Boolean, tokens: Boolean, cookies: Boolean, email: Boolean, username: Boolean, phone: Boolean
-    ): String {
-        val credentials = listOfNotNull(
-            "web".takeIf { web },
-            "токены".takeIf { tokens },
-            "cookie".takeIf { cookies },
-            "email".takeIf { email },
-            "логин".takeIf { username },
-            "телефон".takeIf { phone }
-        ).joinToString("/")
-        return "Войти через $credentials"
-    }
 }

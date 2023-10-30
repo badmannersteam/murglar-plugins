@@ -8,7 +8,6 @@ import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.security.MessageDigest
-import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -20,8 +19,6 @@ object MurglarLibUtils {
 
     const val CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-
-    val RUSSIAN = Locale.Builder().setLanguage("ru").build()
 
     private val DASHES_NORMALIZER =
         Pattern.compile("[\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u2043\u02D7\u2796\\-]+")
@@ -78,6 +75,9 @@ object MurglarLibUtils {
             else -> replaceRange(keepFirst, endIndex, replacement)
         }
     }
+
+    @JvmStatic
+    fun String.uppercaseFirst() = replaceFirstChar(Char::uppercaseChar)
 
     /**
      * Removes HTML tags from text, replacing the `<br>` with new line.

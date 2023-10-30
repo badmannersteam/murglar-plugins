@@ -1,18 +1,34 @@
 package com.badmanners.murglar.lib.core.localization
 
+import java.util.Locale
+
 
 /**
- * Default hardcoded English implementation of [Messages].
+ * Default (English) implementation of [Messages].
  */
 abstract class DefaultMessages : Messages {
-    override val illegalResponseFormat = "Answer doesn't contain valid response: "
-    override val invalidCredentialsFormat = "Invalid credentials!"
-    override val anErrorHasOccurred = "An error has occurred: "
+
+    companion object {
+        val DEFAULT = Locale.Builder().setLanguage("en").build()
+    }
+
+    override val loginWith = "Login with"
+    override val web = "web"
+    override val token = "token"
+    override val cookie = "cookie"
+    override val email = "email"
+    override val username = "username"
+    override val phone = "phone"
+    override val password = "password"
+    override val copy = "Copy"
+    override val invalidCredentials = "Invalid credentials!"
+    override val youAreLoggedIn = "You are logged in"
+    override val youAreNotLoggedIn = "You are not logged in"
     override val sessionUpdateFailed = "Session update failed, re-login to your account!"
-    override val youAreLoggedIn get() = "You are logged in $serviceName"
-    override val youAreNotLoggedIn get() = "You are not logged in $serviceName"
-    override val trackHasNoLyrics = "Track has no lyrics"
+    override val anErrorHasOccurred = "An error has occurred:"
+    override val illegalResponseFormat = "Answer doesn't contain valid response:"
     override val sourceUrlUnavailable = "Source url unavailable!"
+    override val trackHasNoLyrics = "Track has no lyrics"
     override val myTracks = "My tracks"
     override val myAlbums = "My albums"
     override val myArtists = "My artists"
@@ -36,18 +52,4 @@ abstract class DefaultMessages : Messages {
     override val similarArtists = "Similar artists"
     override val artists = "Artists"
     override val playlists = "Playlists"
-    override val copyToken = "Copy token"
-    override fun loginWith(
-        web: Boolean, tokens: Boolean, cookies: Boolean, email: Boolean, username: Boolean, phone: Boolean
-    ): String {
-        val credentials = listOfNotNull(
-            "web".takeIf { web },
-            "tokens".takeIf { tokens },
-            "cookie".takeIf { cookies },
-            "email".takeIf { email },
-            "username".takeIf { username },
-            "phone".takeIf { phone }
-        ).joinToString("/")
-        return "Login with $credentials"
-    }
 }
