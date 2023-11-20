@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 object MurglarLibUtils {
 
     const val CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
 
     private val DASHES_NORMALIZER =
         Pattern.compile("[\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u2043\u02D7\u2796\\-]+")
