@@ -10,5 +10,5 @@ class ResponseConversionException(
     cause: Throwable,
     val headers: List<Pair<String, String>>,
     val statusCode: Int,
-    message: String
-) : RuntimeException(message, cause)
+    val statusMessage: String
+) : RuntimeException("Can't convert: $statusCode, $statusMessage, ${cause.message}", cause)
