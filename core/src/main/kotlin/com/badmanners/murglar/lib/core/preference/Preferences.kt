@@ -22,7 +22,8 @@ data class ActionPreference(
     /**
      * If [needConfirmation] is true and this field is null, then client default confirmation text must be used.
      */
-    val confirmationText: String? = null
+    val confirmationText: String? = null,
+    val refreshAllAfterInvoke: Boolean = false
 ) : Preference
 
 
@@ -43,8 +44,10 @@ data class CopyPreference(
 data class EditPreference(
     override val id: String,
     override val title: String,
+    val message: String?,
     val getter: () -> String,
-    val setter: (String) -> Unit
+    val setter: (String) -> Unit,
+    val refreshAllAfterChange: Boolean = false
 ) : Preference
 
 
@@ -55,11 +58,12 @@ data class ListPreference(
     override val id: String,
     override val title: String,
     val message: String?,
-    val nameGetter: () -> String,
+    val nameGetter: (() -> String)?,
     val valueGetter: () -> String,
     val valueSetter: (String) -> Unit,
     val names: List<String>,
-    val values: List<String>
+    val values: List<String>,
+    val refreshAllAfterChange: Boolean = false
 ) : Preference
 
 
@@ -71,5 +75,6 @@ data class SwitchPreference(
     override val title: String,
     val summary: String?,
     val getter: () -> Boolean,
-    val setter: (Boolean) -> Unit
+    val setter: (Boolean) -> Unit,
+    val refreshAllAfterChange: Boolean = false
 ) : Preference
