@@ -32,8 +32,8 @@ abstract class MutableNode : Node {
         if (javaClass != other?.javaClass)
             return false
         other as MutableNode
-        return nodeId == other.nodeId
+        return nodePath == other.nodePath
     }
 
-    override fun hashCode() = nodeId.hashCode()
+    override fun hashCode() = nodePath.hashCode()
 }
