@@ -193,4 +193,14 @@ object MurglarLibUtils {
             //on android <api 24 there is no such method
         }
     }
+
+    @JvmStatic
+    fun isAndroid() = getAndroidSdkVersion() != null
+
+    @JvmStatic
+    fun getAndroidSdkVersion() = try {
+        Class.forName("android.os.Build\$VERSION").getDeclaredField("SDK_INT").getInt(null)
+    } catch (ignored: Throwable) {
+        null
+    }
 }
