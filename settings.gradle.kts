@@ -20,7 +20,7 @@ dependencyResolutionManagement {
             google()
         }
         create("libs") {
-            version("murglar-plugins", "4.2")
+            version("murglar-plugins", "4.3-SNAPSHOT")
 
             // 1.5+ has this - https://github.com/Kotlin/kotlinx.serialization/issues/2231
             version("kotlinx-json", "1.4.1")
