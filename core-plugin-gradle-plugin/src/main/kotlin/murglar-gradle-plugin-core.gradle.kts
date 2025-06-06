@@ -1,3 +1,6 @@
+import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.build
+import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.runtimeClasspath
+import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.shadowJar
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import java.net.URI
@@ -8,6 +11,7 @@ plugins {
     id("kotlin")
     id("kotlin-noarg")
     id("kotlinx-serialization")
+    id("com.gradleup.shadow")
 }
 
 group = "com.github.badmannersteam.murglar-plugins"
@@ -23,10 +27,20 @@ configurations.configureEach {
 }
 
 dependencies {
-    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}")
+    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
     "compileOnly"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
     "testImplementation"("org.jetbrains.kotlin:kotlin-test")
     "testImplementation"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
+}
+
+configurations.runtimeClasspath {
+    exclude("org.jetbrains.kotlin", "kotlin-stdlib")
+    exclude("org.jetbrains.kotlin", "kotlin-stdlib-common")
+    exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
+    exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
+    exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+    exclude("org.threeten", "threetenbp")
+    exclude("org.apache.commons", "commons-text")
 }
 
 configure<KotlinProjectExtension> {
@@ -39,6 +53,10 @@ configure<NoArgExtension> {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
 
 interface MurglarPluginExtension {
@@ -56,8 +74,9 @@ afterEvaluate {
 
     version = "${Versions.murglarPluginsMajor}.${pluginExtension.version.get()}"
 
-    tasks.withType<Jar> {
-        archiveBaseName.set(pluginExtension.id.map { "murglar-plugin-$it" })
+    tasks.shadowJar {
+        archiveBaseName = pluginExtension.id.map { "murglar-plugin-$it" }
+        archiveClassifier = ""
         manifest.attributes.apply {
             set("Plugin-Id", pluginExtension.id)
             set("Plugin-Name", pluginExtension.name)

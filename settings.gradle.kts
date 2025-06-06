@@ -31,12 +31,13 @@ dependencyResolutionManagement {
             version("kotlin", "1.8.22")
             version("android-build-plugin", "8.1.1")
             version("buildconfig", "3.1.0")
+            version("shadow", "8.3.6")
 
             version("min-sdk", "21")
             version("target-sdk", "33")
             version("build-tools", "33.0.2")
 
-            library("kotlin-stdlib", "org.jetbrains.kotlin", "kotlin-stdlib-jdk8").versionRef("kotlin")
+            library("kotlin-stdlib", "org.jetbrains.kotlin", "kotlin-stdlib").versionRef("kotlin")
             library("kotlinx-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-json")
             library("time-backport", "org.threeten", "threetenbp").versionRef("time-backport")
             library("commons-text", "org.apache.commons", "commons-text").versionRef("commons-text")
@@ -45,6 +46,7 @@ dependencyResolutionManagement {
             library("kotlin-noarg", "org.jetbrains.kotlin", "kotlin-noarg").versionRef("kotlin")
             library("kotlin-serialization", "org.jetbrains.kotlin", "kotlin-serialization").versionRef("kotlin")
             library("android-build-plugin", "com.android.tools.build", "gradle").versionRef("android-build-plugin")
+            library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").versionRef("shadow")
 
             plugin("kotlin", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
             plugin("kotlin-noarg", "org.jetbrains.kotlin.plugin.noarg").versionRef("kotlin")

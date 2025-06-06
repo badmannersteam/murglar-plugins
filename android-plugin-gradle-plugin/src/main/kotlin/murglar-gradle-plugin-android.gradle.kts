@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -26,9 +27,23 @@ configurations.configureEach {
 }
 
 dependencies {
-    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}")
+    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
     "compileOnly"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
     "implementation"("com.github.badmannersteam.murglar-plugins:android-plugin-base:${Versions.murglarPlugins}@aar")
+}
+
+configure<ApplicationAndroidComponentsExtension> {
+    onVariants { variant ->
+        variant.runtimeConfiguration.apply {
+            exclude("org.jetbrains.kotlin", "kotlin-stdlib")
+            exclude("org.jetbrains.kotlin", "kotlin-stdlib-common")
+            exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
+            exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
+            exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+            exclude("org.threeten", "threetenbp")
+            exclude("org.apache.commons", "commons-text")
+        }
+    }
 }
 
 
