@@ -6,10 +6,12 @@ plugins {
 }
 
 dependencies {
-    compileOnly(libs.kotlin.stdlib)
+    api(libs.kotlin.stdlib)
+    api(libs.kotlinx.coroutines)
     api(libs.kotlinx.json)
     api(libs.time.backport)
     api(libs.commons.text)
+    api(libs.fuzzywuzzy)
 }
 
 kotlin {

@@ -1,9 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.gradle.api.ApkVariantOutput
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import java.net.URI
 import java.util.Properties
 
@@ -27,12 +24,11 @@ configurations.configureEach {
 }
 
 dependencies {
-    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
     "compileOnly"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
     "implementation"("com.github.badmannersteam.murglar-plugins:android-plugin-base:${Versions.murglarPlugins}@aar")
 }
 
-configure<ApplicationAndroidComponentsExtension> {
+androidComponents {
     onVariants { variant ->
         variant.runtimeConfiguration.apply {
             exclude("org.jetbrains.kotlin", "kotlin-stdlib")
@@ -40,14 +36,19 @@ configure<ApplicationAndroidComponentsExtension> {
             exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
             exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
             exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+            exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core")
+            exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core")
+            exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-bom")
+            exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8")
             exclude("org.threeten", "threetenbp")
             exclude("org.apache.commons", "commons-text")
+            exclude("me.xdrop", "fuzzywuzzy")
         }
     }
 }
 
 
-configure<BaseAppModuleExtension> {
+android {
     compileSdk = Versions.targetSdk
     buildToolsVersion = Versions.buildTools
 
@@ -67,7 +68,7 @@ configure<BaseAppModuleExtension> {
     }
 
     buildTypes {
-        val config = this@configure.signingConfigs["signingConfig"]
+        val config = signingConfigs["signingConfig"]
         debug {
             signingConfig = config
         }
@@ -79,7 +80,7 @@ configure<BaseAppModuleExtension> {
     }
 }
 
-configure<KotlinProjectExtension> {
+kotlin {
     jvmToolchain(17)
 }
 
@@ -103,12 +104,17 @@ interface MurglarPluginExtension {
     val id: Property<String>
     val name: Property<String>
     val version: Property<Int>
-    val murglarClass: Property<String>
+    val type: Property<PluginType>
+    val entryPointClass: Property<String>
 
     val appId get() = "com.badmanners.murglar.plugin.${id.get()}"
     val fullName get() = "Murglar plugin for ${name.get()}"
     val fullVersion get() = "${Versions.murglarPluginsMajor}.${version.get()}"
     val apkName get() = "murglar-plugin-${id.get()}-${fullVersion}.apk"
+
+    enum class PluginType {
+        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER
+    }
 }
 
 val pluginExtension = extensions.create<MurglarPluginExtension>("murglarAndroidPlugin")
@@ -118,7 +124,7 @@ gradle.afterProject {
     if (name != currentProjectName)
         return@afterProject
 
-    configure<BaseAppModuleExtension> {
+    android {
         namespace = pluginExtension.appId
 
         defaultConfig {
@@ -131,7 +137,8 @@ gradle.afterProject {
                 "pluginId" to pluginExtension.id.get(),
                 "pluginName" to pluginExtension.name.get(),
                 "pluginFullName" to pluginExtension.fullName,
-                "pluginMurglarClass" to pluginExtension.murglarClass.get(),
+                "pluginType" to pluginExtension.type.convention(MurglarPluginExtension.PluginType.MURGLAR).get(),
+                "pluginEntryPointClass" to pluginExtension.entryPointClass.get(),
                 "pluginVersion" to pluginExtension.version.get(),
                 "pluginLibVersion" to Versions.murglarPluginsMajor
             )
@@ -139,7 +146,7 @@ gradle.afterProject {
 
         applicationVariants.all {
             outputs.all {
-                (this as ApkVariantOutput).outputFileName = pluginExtension.apkName
+                (this as BaseVariantOutputImpl).outputFileName = pluginExtension.apkName
             }
         }
     }

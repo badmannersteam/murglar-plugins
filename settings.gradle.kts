@@ -16,41 +16,37 @@ dependencyResolutionManagement {
     versionCatalogs {
         repositories {
             mavenLocal()
+            mavenCentral()
             gradlePluginPortal()
             google()
         }
         create("libs") {
             version("murglar-plugins", "5.0-SNAPSHOT")
 
-            // 1.5+ has this - https://github.com/Kotlin/kotlinx.serialization/issues/2231
-            version("kotlinx-json", "1.4.1")
-            version("time-backport", "1.6.8")
-            // 1.9 uses java 8 features, don't update
-            version("commons-text", "1.8")
-
-            version("kotlin", "1.8.22")
-            version("android-build-plugin", "8.1.1")
-            version("buildconfig", "3.1.0")
-            version("shadow", "8.3.6")
+            version("kotlin", "2.1.21")
+            version("android-build-plugin", "8.10.1")
 
             version("min-sdk", "21")
-            version("target-sdk", "33")
-            version("build-tools", "33.0.2")
+            version("target-sdk", "35")
+            version("build-tools", "35.0.0")
 
             library("kotlin-stdlib", "org.jetbrains.kotlin", "kotlin-stdlib").versionRef("kotlin")
-            library("kotlinx-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("kotlinx-json")
-            library("time-backport", "org.threeten", "threetenbp").versionRef("time-backport")
-            library("commons-text", "org.apache.commons", "commons-text").versionRef("commons-text")
+            library("kotlinx-coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.10.2")
+            library("kotlinx-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").version("1.8.1")
+            library("time-backport", "org.threeten", "threetenbp").version("1.7.1")
+            // 1.9 uses java 8 features, don't update
+            library("commons-text", "org.apache.commons", "commons-text").version("1.8")
+            library("fuzzywuzzy", "me.xdrop", "fuzzywuzzy").version("1.4.0")
 
             library("kotlin-gradle-plugin", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef("kotlin")
             library("kotlin-noarg", "org.jetbrains.kotlin", "kotlin-noarg").versionRef("kotlin")
             library("kotlin-serialization", "org.jetbrains.kotlin", "kotlin-serialization").versionRef("kotlin")
             library("android-build-plugin", "com.android.tools.build", "gradle").versionRef("android-build-plugin")
-            library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").versionRef("shadow")
+            library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").version("8.3.6")
 
             plugin("kotlin", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
             plugin("kotlin-noarg", "org.jetbrains.kotlin.plugin.noarg").versionRef("kotlin")
-            plugin("buildconfig", "com.github.gmazzo.buildconfig").versionRef("buildconfig")
+            plugin("buildconfig", "com.github.gmazzo.buildconfig").version("5.5.4")
             plugin("android-library-plugin", "com.android.library").versionRef("android-build-plugin")
         }
     }

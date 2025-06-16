@@ -23,7 +23,6 @@ import java.util.Locale
  */
 abstract class BaseMurglar<Track : BaseTrack, Msg : Messages> @JvmOverloads protected constructor(
     override val id: String,
-    override val iconUrl: String?,
     private val localeToMessages: Map<Locale, Msg>,
     protected val preferences: PreferenceMiddleware,
     protected val network: NetworkMiddleware,

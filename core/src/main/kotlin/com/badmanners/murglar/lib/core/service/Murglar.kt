@@ -42,11 +42,6 @@ interface Murglar<Track : BaseTrack> {
     val name: String
 
     /**
-     * HTTP url to the icon of the music service (512px png is preferred).
-     */
-    val iconUrl: String?
-
-    /**
      * List of all available locales for [Messages].
      * Must contain at least [Locale.ENGLISH] locale.
      */

@@ -1,5 +1,7 @@
 package com.badmanners.murglar.lib.core.network
 
+import com.badmanners.murglar.lib.core.utils.MurglarLibUtils
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -36,6 +38,7 @@ fun interface ResponseConverter<T> {
 /**
  * Default [ResponseConverter]s.
  */
+@OptIn(ExperimentalSerializationApi::class)
 object ResponseConverters {
 
     /**
@@ -56,8 +59,17 @@ object ResponseConverters {
     fun asString() = ResponseConverter { stream, charset -> String(stream.readBytes(), charset) }
 
     @JvmStatic
-    fun asJsonObject() = ResponseConverter { stream, _ -> Json.decodeFromStream<JsonObject>(stream) }
+    fun asJsonObject() = ResponseConverter { stream, _ -> decodeFromStreamCompat<JsonObject>(stream) }
 
     @JvmStatic
-    fun asJsonArray() = ResponseConverter { stream, _ -> Json.decodeFromStream<JsonArray>(stream) }
+    fun asJsonArray() = ResponseConverter { stream, _ -> decodeFromStreamCompat<JsonArray>(stream) }
+
+
+    private inline fun <reified T> decodeFromStreamCompat(stream: InputStream) = when {
+        // https://github.com/Kotlin/kotlinx.serialization/issues/2457
+        MurglarLibUtils.isAndroid() && MurglarLibUtils.getAndroidSdkVersion()!! < 24 ->
+            Json.decodeFromString<T>(stream.readBytes().toString(Charsets.UTF_8))
+
+        else -> Json.decodeFromStream<T>(stream)
+    }
 }

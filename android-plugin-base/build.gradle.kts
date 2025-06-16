@@ -22,7 +22,7 @@ android {
 
     testVariants.all {
         mergedFlavor.manifestPlaceholders += listOf(
-            "pluginId", "pluginName", "pluginFullName", "pluginMurglarClass", "pluginVersion", "pluginLibVersion"
+            "pluginId", "pluginName", "pluginFullName", "pluginType", "pluginEntryPointClass", "pluginVersion", "pluginLibVersion"
         ).associateWith { "" }
     }
 

@@ -8,11 +8,9 @@ import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.security.MessageDigest
-import java.util.regex.Pattern
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.reflect.KClass
 
 
 object MurglarLibUtils {
@@ -20,14 +18,10 @@ object MurglarLibUtils {
     const val CHROME_DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 
-    @Deprecated("Use 'CHROME_DESKTOP_USER_AGENT'.")
-    const val CHROME_USER_AGENT = CHROME_DESKTOP_USER_AGENT
-
     const val CHROME_MOBILE_USER_AGENT = "Mozilla/5.0 (Linux; Android 13; Pixel 8) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.71 Mobile Safari/537.36"
 
-    private val DASHES_NORMALIZER =
-        Pattern.compile("[\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u2043\u02D7\u2796\\-]+")
+    private val DASHES_NORMALIZER = "[\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u2043\u02D7\u2796\\-]+".toRegex()
 
     private val HEX_CHARS = "0123456789abcdef".toCharArray()
 
@@ -38,7 +32,7 @@ object MurglarLibUtils {
     @OptIn(ExperimentalContracts::class)
     inline fun <T> T.letIf(condition: Boolean, block: (T) -> T): T {
         contract {
-            callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+            callsInPlace(block, InvocationKind.AT_MOST_ONCE)
         }
         return when {
             condition -> block(this)
@@ -50,11 +44,6 @@ object MurglarLibUtils {
     @Suppress("UNCHECKED_CAST")
     fun <T> List<*>.castList(): List<T> = this as List<T>
 
-    fun KClass<*>.isSuperclassOf(derived: KClass<*>) = derived.isSubclassOf(this)
-
-    fun KClass<*>.isSubclassOf(base: KClass<*>): Boolean =
-        this == base || supertypes.mapNotNull { it.classifier as? KClass<*> }.any { it == base }
-
     /**
      * Normalizes string by unescaping HTML tags, replacing dashes to generic one, removing duplicated space characters
      * and limiting size to 500.
@@ -63,10 +52,38 @@ object MurglarLibUtils {
     fun String.normalize(): String {
         var string = this
         string = StringEscapeUtils.unescapeHtml4(string)
-        string = DASHES_NORMALIZER.matcher(string).replaceAll("-")
+        string = DASHES_NORMALIZER.replace(string, "-")
         string = StringUtils.normalizeSpace(string)
         string = string.take(500)
         return string
+    }
+
+    @JvmStatic
+    fun String.optimizeSearchQuery(): String = lowercase()
+        .replace(" *\\([^)]*\\) *".toRegex(), " ")
+        .replace(" *\\[[^]]*] *".toRegex(), " ")
+        .replace("feat.|ft.".toRegex(), "")
+        .replace("prod. by|prod.".toRegex(), "")
+        .replace("\\s+".toRegex(), " ")
+
+    @JvmStatic
+    fun String.containsCyrillic() = indices.any {
+        codePointAt(it) in 'А'.code..'я'.code
+    }
+
+    @JvmStatic
+    fun String.containsJapanese() = indices.any {
+        val codePoint = codePointAt(it)
+        sequenceOf(
+            '\u3041'.code..'\u3096'.code, //Hiragana
+            '\u30A0'.code..'\u30FF'.code, //Katakana (Full Width)
+            '\u3400'.code..'\u4DB5'.code, //Kanji
+            '\u4E00'.code..'\u9FCB'.code, //Kanji
+            '\uF900'.code..'\uFA6A'.code, //Kanji
+            '\u2E80'.code..'\u2FD5'.code, //Kanji Radicals
+            '\uFF5F'.code..'\uFF9F'.code, //Katakana and Punctuation (Half Width)
+            '\u3000'.code..'\u303F'.code  //Japanese Symbols and Punctuation
+        ).any { range -> codePoint in range }
     }
 
     /**

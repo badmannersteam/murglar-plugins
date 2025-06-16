@@ -40,7 +40,7 @@ interface NetworkMiddleware {
     /**
      * Clears all cookies from cookie store for passed domain.
      *
-     * @param domains without trailing dot
+     * @param domains without schema and trailing dot
      */
     fun clearCookiesForDomains(vararg domains: String)
 

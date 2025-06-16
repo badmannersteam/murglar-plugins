@@ -1,8 +1,3 @@
-import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.build
-import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.runtimeClasspath
-import gradle.kotlin.dsl.accessors._593230ccf66f690bcbf89c0aa3add4af.shadowJar
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.noarg.gradle.NoArgExtension
 import java.net.URI
 
 
@@ -27,7 +22,6 @@ configurations.configureEach {
 }
 
 dependencies {
-    "compileOnly"("org.jetbrains.kotlin:kotlin-stdlib:${Versions.kotlin}")
     "compileOnly"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
     "testImplementation"("org.jetbrains.kotlin:kotlin-test")
     "testImplementation"("com.github.badmannersteam.murglar-plugins:core:${Versions.murglarPlugins}")
@@ -39,15 +33,20 @@ configurations.runtimeClasspath {
     exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
     exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
     exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+    exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core")
+    exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core")
+    exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-bom")
+    exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8")
     exclude("org.threeten", "threetenbp")
     exclude("org.apache.commons", "commons-text")
+    exclude("me.xdrop", "fuzzywuzzy")
 }
 
-configure<KotlinProjectExtension> {
+kotlin {
     jvmToolchain(17)
 }
 
-configure<NoArgExtension> {
+noArg {
     annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
 }
 
@@ -62,8 +61,17 @@ tasks.build {
 interface MurglarPluginExtension {
     val id: Property<String>
     val name: Property<String>
-    val version: Property<String>
-    val murglarClass: Property<String>
+    val version: Property<Int>
+    val snapshot: Property<Boolean>
+    val type: Property<PluginType>
+    val entryPointClass: Property<String>
+
+    val fullVersion
+        get() = "${Versions.murglarPluginsMajor}.${version.get()}${if (snapshot.getOrElse(false)) "-SNAPSHOT" else ""}"
+
+    enum class PluginType {
+        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER
+    }
 }
 
 val pluginExtension = extensions.create<MurglarPluginExtension>("murglarPlugin")
@@ -72,18 +80,32 @@ afterEvaluate {
     if (!pluginExtension.id.isPresent)
         return@afterEvaluate
 
-    version = "${Versions.murglarPluginsMajor}.${pluginExtension.version.get()}"
+    version = pluginExtension.fullVersion
+
+    val pluginType = pluginExtension.type.convention(MurglarPluginExtension.PluginType.MURGLAR)
 
     tasks.shadowJar {
         archiveBaseName = pluginExtension.id.map { "murglar-plugin-$it" }
+        archiveVersion = pluginExtension.version.map { "${Versions.murglarPluginsMajor}.$it" }
         archiveClassifier = ""
         manifest.attributes.apply {
             set("Plugin-Id", pluginExtension.id)
             set("Plugin-Name", pluginExtension.name)
-            set("Plugin-Murglar-Class", pluginExtension.murglarClass)
-            set("Plugin-Version", pluginExtension.version.map { it.substringBefore('-') })
+            set("Plugin-Type", pluginType.map(MurglarPluginExtension.PluginType::name))
+            set("Plugin-Entry-Point-Class", pluginExtension.entryPointClass)
+            set("Plugin-Version", pluginExtension.version.map(Int::toString))
             set("Plugin-Lib-Version", Versions.murglarPluginsMajor)
         }
     }
+
+    if (pluginType.get() == MurglarPluginExtension.PluginType.MURGLAR)
+        tasks.named("check") {
+            doFirst {
+                val iconFile = project.file("src/main/resources/icon.xml")
+                check(iconFile.exists()) {
+                    "No plugin icon found (${iconFile.path})!"
+                }
+            }
+        }
 }
 
