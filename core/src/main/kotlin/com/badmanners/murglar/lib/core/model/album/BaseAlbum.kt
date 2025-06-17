@@ -14,6 +14,7 @@ abstract class BaseAlbum(
     id: String,
     title: String,
     description: String? = null,
+    val type: AlbumType = AlbumType.ALBUM,
     val artistIds: List<String>,
     val artistNames: List<String>,
     tracksCount: Int,
