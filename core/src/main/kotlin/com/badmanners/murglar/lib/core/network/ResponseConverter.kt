@@ -31,7 +31,7 @@ fun interface ResponseConverter<T> {
     /**
      * Performs response body content conversion.
      */
-    fun convert(stream: InputStream, charset: Charset): T
+    suspend fun convert(stream: InputStream, charset: Charset): T
 }
 
 
@@ -49,7 +49,7 @@ object ResponseConverters {
     fun asUnit() = object : ResponseConverter<Unit> {
         override val dropBody = true
         override val emptyResult = Unit
-        override fun convert(stream: InputStream, charset: Charset) = error("Can't convert empty body!")
+        override suspend fun convert(stream: InputStream, charset: Charset) = error("Can't convert empty body!")
     }
 
     @JvmStatic

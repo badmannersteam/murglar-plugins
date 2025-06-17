@@ -3,7 +3,6 @@ package com.badmanners.murglar.lib.core.login
 import com.badmanners.murglar.lib.core.login.CredentialsLoginVariant.Credential
 import com.badmanners.murglar.lib.core.network.NetworkMiddleware
 import com.badmanners.murglar.lib.core.service.Murglar
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import com.badmanners.murglar.lib.core.webview.WebViewProvider
 import com.badmanners.murglar.lib.core.webview.WebViewProvider.UrlLoadPolicyResolver
 
@@ -57,8 +56,7 @@ interface LoginResolver {
      * @throws UnsupportedOperationException if login is not supported.
      * @throws IllegalStateException if login failed.
      */
-    @WorkerThread
-    fun webLogin(loginVariantId: String, webViewProvider: WebViewProvider): Boolean
+    suspend fun webLogin(loginVariantId: String, webViewProvider: WebViewProvider): Boolean
 
     /**
      * List of credentials login variants. If list is empty, then credentials login is not supported.
@@ -93,8 +91,7 @@ interface LoginResolver {
      * @throws UnsupportedOperationException if login is not supported.
      * @throws IllegalStateException if login failed.
      */
-    @WorkerThread
-    fun credentialsLogin(loginVariantId: String, args: Map<String, String>): CredentialLoginStep
+    suspend fun credentialsLogin(loginVariantId: String, args: Map<String, String>): CredentialLoginStep
 
     /**
      * Performs logout from the service.

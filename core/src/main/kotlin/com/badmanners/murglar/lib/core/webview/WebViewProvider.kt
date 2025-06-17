@@ -1,7 +1,6 @@
 package com.badmanners.murglar.lib.core.webview
 
 import com.badmanners.murglar.lib.core.network.NetworkMiddleware
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 
 
 /**
@@ -22,8 +21,7 @@ interface WebViewProvider {
      * @param resolver              url load policy resolver
      * @return true if successful, false if cancelled
      */
-    @WorkerThread
-    fun startWebView(
+    suspend fun startWebView(
         enableJS: Boolean,
         userAgent: String?,
         helpText: String?,

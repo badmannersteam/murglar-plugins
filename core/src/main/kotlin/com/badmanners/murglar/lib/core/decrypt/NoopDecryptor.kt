@@ -12,6 +12,6 @@ class NoopDecryptor<Track : BaseTrack> : Decryptor<Track> {
 
     override val decryptionChunkSize get() = throw UnsupportedOperationException("decryptionChunkSize")
 
-    override fun decrypt(content: ByteArray, offset: Int, length: Int, track: Track, source: Source) =
+    override suspend fun decrypt(content: ByteArray, offset: Int, length: Int, track: Track, source: Source) =
         throw UnsupportedOperationException("decrypt")
 }

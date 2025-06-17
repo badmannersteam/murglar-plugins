@@ -22,7 +22,7 @@ class StubNodeResolver(
 
     override fun getRootNodes(onlyAvailable: Boolean) = emptyList<Node>()
 
-    override fun getNode(path: Path) = throw UnsupportedOperationException("'getNode' in stub node resolver")
+    override suspend fun getNode(path: Path) = throw UnsupportedOperationException("'getNode' in stub node resolver")
 
     override fun getNodeParameters(path: Path) =
         throw UnsupportedOperationException("'getNodeParameters' in stub node resolver")
@@ -39,30 +39,30 @@ class StubNodeResolver(
     override fun specifySearchableNode(searchableNode: Node, query: String) =
         throw UnsupportedOperationException("'specifySearchableNode' in stub node resolver")
 
-    override fun getNodeContent(path: Path, page: Int?) =
+    override suspend fun getNodeContent(path: Path, page: Int?) =
         throw UnsupportedOperationException("'getNodeContent' in stub node resolver")
 
-    override fun getRadioContent(radioNode: Node) =
+    override suspend fun getRadioContent(radioNode: Node) =
         throw UnsupportedOperationException("'getRadioContent' in stub node resolver")
 
     override val supportsLikes = false
 
     override val likesMapping get() = throw UnsupportedOperationException("'likesMapping' in stub node resolver")
 
-    override fun likeNode(node: Node, like: Boolean) =
+    override suspend fun likeNode(node: Node, like: Boolean) =
         throw UnsupportedOperationException("'likeNode' in stub node resolver")
 
     override fun canGetNodeFromUrl(url: String) = false
 
-    override fun getNodeFromUrl(url: String) =
+    override suspend fun getNodeFromUrl(url: String) =
         throw UnsupportedOperationException("'getNodeFromUrl' in stub node resolver")
 
     override fun getNodeCustomActions(node: Node): List<NamedAction> = emptyList()
 
     override val supportedEventsMapping = emptyMap<String, Set<KClass<out Event>>>()
 
-    override fun handleEvent(event: Event, node: Node) =
+    override suspend fun handleEvent(event: Event, node: Node) =
         throw UnsupportedOperationException("Event handling not supported")
 
-    override fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack> = emptyList()
+    override suspend fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack> = emptyList()
 }

@@ -12,7 +12,6 @@ import com.badmanners.murglar.lib.core.network.NetworkMiddleware
 import com.badmanners.murglar.lib.core.notification.NotificationMiddleware
 import com.badmanners.murglar.lib.core.preference.Preference
 import com.badmanners.murglar.lib.core.preference.PreferenceMiddleware
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Proxy
 import java.util.Locale
@@ -41,16 +40,13 @@ abstract class BaseMurglar<Track : BaseTrack, Msg : Messages> @JvmOverloads prot
 
     override val murglarPreferences = emptyList<Preference>()
 
-    @WorkerThread
-    override fun onCreate() = Unit
+    override suspend fun onCreate() = Unit
 
     override fun hasLyrics(track: Track) = false
 
-    @WorkerThread
-    override fun getLyrics(track: Track): Lyrics = throw UnsupportedOperationException("getLyrics")
+    override suspend fun getLyrics(track: Track): Lyrics = throw UnsupportedOperationException("getLyrics")
 
-    @WorkerThread
-    override fun getTags(track: Track): Tags = Tags.Builder()
+    override suspend fun getTags(track: Track): Tags = Tags.Builder()
         .title(track.title)
         .subtitle(track.subtitle)
         .artists(track.artistNames)

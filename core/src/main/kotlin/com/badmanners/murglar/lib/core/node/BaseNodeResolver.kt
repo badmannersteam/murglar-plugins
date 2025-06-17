@@ -26,7 +26,6 @@ import com.badmanners.murglar.lib.core.node.BaseNodeResolver.InternalConfigurati
 import com.badmanners.murglar.lib.core.service.Murglar
 import com.badmanners.murglar.lib.core.utils.MurglarLibUtils.urlDecode
 import com.badmanners.murglar.lib.core.utils.MurglarLibUtils.urlEncode
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import com.badmanners.murglar.lib.core.utils.pattern.PatternMatcher.matchAllFromCollection
 import com.badmanners.murglar.lib.core.utils.pattern.PatternMatcher.matchFromCollection
 import kotlin.reflect.KClass
@@ -167,8 +166,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             .toList()
     }
 
-    @WorkerThread
-    override fun getNode(path: Path): Node {
+    override suspend fun getNode(path: Path): Node {
         requireBelongsToThisResolver(path)
 
         val subPath = path.subpath().toString()
@@ -232,8 +230,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
     protected fun Map<String, String>.getQuery(): String = this["query"]?.urlDecode()
         ?: error("No query found in params!")
 
-    @WorkerThread
-    override fun getNodeContent(path: Path, page: Int?): List<Node> {
+    override suspend fun getNodeContent(path: Path, page: Int?): List<Node> {
         requireBelongsToThisResolver(path)
 
         val isPageable = getNodeParameters(path).isPageable
@@ -251,8 +248,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             } ?: error("No configuration found for '$path'")
     }
 
-    @WorkerThread
-    override fun getRadioContent(radioNode: Node): NodeWithContent {
+    override suspend fun getRadioContent(radioNode: Node): NodeWithContent {
         val path = radioNode.nodePath
 
         requireBelongsToThisResolver(path)
@@ -273,8 +269,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
 
     override val likesMapping get() = config.likes.associate { it.nodeType to it.likeListNodePath }
 
-    @WorkerThread
-    override fun likeNode(node: Node, like: Boolean) {
+    override suspend fun likeNode(node: Node, like: Boolean) {
         requireBelongsToThisResolver(node.nodePath)
         check(supportsLikes) { "Likes aren't supported!" }
 
@@ -287,8 +282,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
     override fun canGetNodeFromUrl(url: String): Boolean = matchFromCollection(
         url, config.urls, { it.urlPattern }, { it.nodeSupplier }) != null
 
-    @WorkerThread
-    override fun getNodeFromUrl(url: String): Node {
+    override suspend fun getNodeFromUrl(url: String): Node {
         val results = matchAllFromCollection(url, config.urls, { it.urlPattern }, { it.nodeSupplier })
             .map { runCatching { it.value.getNode(unmappedPath(), it.parameters) } }
             .groupBy { it.isSuccess }
@@ -308,7 +302,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         else
             emptyMap()
 
-    override fun handleEvent(event: Event, node: Node) {
+    override suspend fun handleEvent(event: Event, node: Node) {
         requireBelongsToThisResolver(node.nodePath)
         require(isAvailable)
 
@@ -320,7 +314,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack> =
+    override suspend fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack> =
         murglar.getTracksByMediaIds(mediaIds).convertTracks(unmappedPath()) as List<BaseTrack>
 
 

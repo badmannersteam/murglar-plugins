@@ -146,10 +146,8 @@ object MurglarLibUtils {
     /**
      * Performs paged loading of elements, chunked by page size.
      */
-    fun <A, T> List<A>.loadPaged(pageSize: Int, loader: (List<A>) -> List<T>): List<T> = asSequence()
-        .chunked(pageSize)
-        .flatMap(loader)
-        .toList()
+    suspend fun <A, T> List<A>.loadPaged(pageSize: Int, loader: suspend (List<A>) -> List<T>): List<T> =
+        chunked(pageSize).flatMap { loader(it) }.toList()
 
     @JvmStatic
     fun String.urlEncode(): String = URLEncoder.encode(this, "UTF-8")
@@ -195,7 +193,7 @@ object MurglarLibUtils {
     @JvmStatic
     fun String.isHlsUrl(): Boolean = try {
         URL(this).isHlsUrl()
-    } catch (e: MalformedURLException) {
+    } catch (_: MalformedURLException) {
         false
     }
 
@@ -217,7 +215,7 @@ object MurglarLibUtils {
     @JvmStatic
     fun getAndroidSdkVersion() = try {
         Class.forName("android.os.Build\$VERSION").getDeclaredField("SDK_INT").getInt(null)
-    } catch (ignored: Throwable) {
+    } catch (_: Throwable) {
         null
     }
 }

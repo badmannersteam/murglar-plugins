@@ -38,5 +38,5 @@ interface Decryptor<Track : BaseTrack> {
      * to **length** (if all chunks decrypted successfully).
      * @throws UnsupportedOperationException if content is not encrypted.
      */
-    fun decrypt(content: ByteArray, offset: Int, length: Int, track: Track, source: Source): ByteArray
+    suspend fun decrypt(content: ByteArray, offset: Int, length: Int, track: Track, source: Source): ByteArray
 }

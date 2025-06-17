@@ -54,5 +54,5 @@ interface NetworkMiddleware {
      *
      * @throws ResponseConversionException if conversion with converter failed
      */
-    fun <T> execute(request: NetworkRequest, converter: ResponseConverter<T>): NetworkResponse<T>
+    suspend fun <T> execute(request: NetworkRequest, converter: ResponseConverter<T>): NetworkResponse<T>
 }

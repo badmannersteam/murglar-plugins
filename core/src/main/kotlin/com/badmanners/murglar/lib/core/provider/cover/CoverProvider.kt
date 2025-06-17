@@ -2,7 +2,6 @@ package com.badmanners.murglar.lib.core.provider.cover
 
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.provider.ProviderException
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 
 
 /**
@@ -27,6 +26,5 @@ interface CoverProvider {
      * empty optional if no cover found or found results don't match the query at all.
      * @throws ProviderException if cover search failed.
      */
-    @WorkerThread
-    fun searchCover(track: BaseTrack): CoverSearchResult?
+    suspend fun searchCover(track: BaseTrack): CoverSearchResult?
 }

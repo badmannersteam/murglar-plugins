@@ -2,7 +2,6 @@ package com.badmanners.murglar.lib.core.provider.lyrics
 
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.provider.ProviderException
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 
 
 /**
@@ -27,6 +26,5 @@ interface LyricsProvider {
      * empty optional if no lyrics found or found results don't match the query at all.
      * @throws ProviderException if lyrics search failed.
      */
-    @WorkerThread
-    fun searchLyrics(track: BaseTrack): LyricsSearchResult?
+    suspend fun searchLyrics(track: BaseTrack): LyricsSearchResult?
 }

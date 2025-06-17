@@ -12,7 +12,6 @@ import com.badmanners.murglar.lib.core.model.node.NodeType
 import com.badmanners.murglar.lib.core.model.node.NodeWithContent
 import com.badmanners.murglar.lib.core.model.node.Path
 import com.badmanners.murglar.lib.core.model.radio.RadioUpdate
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import com.badmanners.murglar.lib.core.utils.pattern.PatternMatcher
 import kotlin.reflect.KClass
 
@@ -167,7 +166,7 @@ data class LikeConfig(
     val likeFunction: LikeFunction
 )
 
-data class EventConfig<E: Event>(
+data class EventConfig<E : Event>(
     val eventClass: KClass<E>,
     val eventHandler: EventHandler<E>,
 )
@@ -184,8 +183,7 @@ fun interface NodeSupplier {
      * @param parentPath path of parent (relatively to content nodes) node
      * @param params     map with parameters, extracted from path (ids/hashes/etc)
      */
-    @WorkerThread
-    fun getNode(parentPath: Path, params: Map<String, String>): Node
+    suspend fun getNode(parentPath: Path, params: Map<String, String>): Node
 }
 
 /**
@@ -197,8 +195,7 @@ fun interface NodeContentSupplier {
      * @param page       0-based page or null, if [NodeParameters.isPageable] == false
      * @param params     map with parameters, extracted from path (ids/hashes/etc)
      */
-    @WorkerThread
-    fun getNodeContent(parentPath: Path, page: Int?, params: Map<String, String>): List<Node>
+    suspend fun getNodeContent(parentPath: Path, page: Int?, params: Map<String, String>): List<Node>
 }
 
 /**
@@ -210,18 +207,15 @@ fun interface NodeWithContentSupplier {
      * @param node   node for which content is requested
      * @param params map with parameters, extracted from path (ids/hashes/etc)
      */
-    @WorkerThread
-    fun getNodeWithContent(node: Node, params: Map<String, String>): NodeWithContent
+    suspend fun getNodeWithContent(node: Node, params: Map<String, String>): NodeWithContent
 }
 
 fun interface LikeFunction {
-    @WorkerThread
-    fun Node.like(like: Boolean)
+    suspend fun Node.like(like: Boolean)
 }
 
-fun interface EventHandler<E: Event> {
-    @WorkerThread
-    fun Node.handleEvent(event: E)
+fun interface EventHandler<E : Event> {
+    suspend fun Node.handleEvent(event: E)
 }
 
 fun interface RelatedNodePathsGenerator {

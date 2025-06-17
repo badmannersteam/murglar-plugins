@@ -1,5 +1,6 @@
 package com.badmanners.murglar.lib.core.service
 
+import Versions
 import com.badmanners.murglar.lib.core.decrypt.Decryptor
 import com.badmanners.murglar.lib.core.localization.Messages
 import com.badmanners.murglar.lib.core.login.LoginResolver
@@ -11,7 +12,6 @@ import com.badmanners.murglar.lib.core.model.track.source.Extension
 import com.badmanners.murglar.lib.core.model.track.source.Source
 import com.badmanners.murglar.lib.core.node.NodeResolver
 import com.badmanners.murglar.lib.core.preference.Preference
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import java.util.Locale
 
 
@@ -81,14 +81,12 @@ interface Murglar<Track : BaseTrack> {
     /**
      * Lifecycle method that will be called by client on client startup.
      */
-    @WorkerThread
-    fun onCreate()
+    suspend fun onCreate()
 
     /**
      * Resolves passed [Source] of the [BaseTrack] for final audio content url.
      */
-    @WorkerThread
-    fun resolveSourceForUrl(track: Track, source: Source): Source
+    suspend fun resolveSourceForUrl(track: Track, source: Source): Source
 
     /**
      * Returns true if the passed track has lyrics (or at least can have), false otherwise.
@@ -99,18 +97,15 @@ interface Murglar<Track : BaseTrack> {
      * Returns track's [Lyrics].
      * [Murglar.hasLyrics] must be checked before.
      */
-    @WorkerThread
-    fun getLyrics(track: Track): Lyrics
+    suspend fun getLyrics(track: Track): Lyrics
 
     /**
      * Return track's [Tags].
      */
-    @WorkerThread
-    fun getTags(track: Track): Tags
+    suspend fun getTags(track: Track): Tags
 
     /**
      * Returns all possible tracks by media ids.
      */
-    @WorkerThread
-    fun getTracksByMediaIds(mediaIds: List<String>): List<Track>
+    suspend fun getTracksByMediaIds(mediaIds: List<String>): List<Track>
 }

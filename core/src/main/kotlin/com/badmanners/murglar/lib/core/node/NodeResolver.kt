@@ -11,7 +11,6 @@ import com.badmanners.murglar.lib.core.model.node.Path
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.service.Murglar
 import com.badmanners.murglar.lib.core.utils.MediaId
-import com.badmanners.murglar.lib.core.utils.contract.WorkerThread
 import kotlin.reflect.KClass
 
 
@@ -62,8 +61,7 @@ interface NodeResolver {
     /**
      * Returns [Node] with requested [Path].
      */
-    @WorkerThread
-    fun getNode(path: Path): Node
+    suspend fun getNode(path: Path): Node
 
     /**
      * Returns [NodeParameters] for the [Node] with requested [Path].
@@ -107,16 +105,14 @@ interface NodeResolver {
      * @param path path of the [Node].
      * @param page 0-based page if [NodeParameters.isPageable] or null otherwise
      */
-    @WorkerThread
-    fun getNodeContent(path: Path, page: Int? = null): List<Node>
+    suspend fun getNodeContent(path: Path, page: Int? = null): List<Node>
 
     /**
      * Returns radio update - next part of radio tracks and updated radio node.
      *
      * @param radioNode radio node from the nodes tree or updated radio node from the previous call of this method.
      */
-    @WorkerThread
-    fun getRadioContent(radioNode: Node): NodeWithContent
+    suspend fun getRadioContent(radioNode: Node): NodeWithContent
 
     /**
      * Returns true if this resolver supports likes/dislikes right now
@@ -145,8 +141,7 @@ interface NodeResolver {
      * @param node node which must be liked/disliked
      * @param like true for like, false for dislike
      */
-    @WorkerThread
-    fun likeNode(node: Node, like: Boolean)
+    suspend fun likeNode(node: Node, like: Boolean)
 
     /**
      * Checks that this resolver most likely can load [Node] for the requested url.
@@ -161,8 +156,7 @@ interface NodeResolver {
      *
      * @param url url to the music service
      */
-    @WorkerThread
-    fun getNodeFromUrl(url: String): Node
+    suspend fun getNodeFromUrl(url: String): Node
 
     /**
      * Returns all supported [NamedAction]s for passed [Node].
@@ -183,8 +177,7 @@ interface NodeResolver {
      * @throws UnsupportedOperationException if event handling not supported
      * @see Event
      */
-    @WorkerThread
-    fun handleEvent(event: Event, node: Node)
+    suspend fun handleEvent(event: Event, node: Node)
 
     /**
      * Returns all possible tracks by media ids.
@@ -193,6 +186,5 @@ interface NodeResolver {
      * @param mediaIds list of [BaseTrack.mediaId]s
      * @see MediaId
      */
-    @WorkerThread
-    fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack>
+    suspend fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack>
 }
