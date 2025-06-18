@@ -4,9 +4,11 @@ import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.model.track.source.Source
 
 
-interface EnhancerDzr {
+interface Enhancer {
 
-    val canGetTrackUrl: Boolean
+    val serviceId: String
+
+    fun canGetTrackUrl(track: BaseTrack, source: Source): Boolean
 
     suspend fun getTrackUrl(track: BaseTrack, source: Source): String
 }
