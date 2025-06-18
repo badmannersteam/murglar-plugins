@@ -113,7 +113,7 @@ interface MurglarPluginExtension {
     val apkName get() = "murglar-plugin-${id.get()}-${fullVersion}.apk"
 
     enum class PluginType {
-        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER
+        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER, TAGS_PROVIDER
     }
 }
 

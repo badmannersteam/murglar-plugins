@@ -70,7 +70,7 @@ interface MurglarPluginExtension {
         get() = "${Versions.murglarPluginsMajor}.${version.get()}${if (snapshot.getOrElse(false)) "-SNAPSHOT" else ""}"
 
     enum class PluginType {
-        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER
+        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER, TAGS_PROVIDER
     }
 }
 
