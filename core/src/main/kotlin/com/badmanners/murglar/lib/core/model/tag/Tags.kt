@@ -22,7 +22,7 @@ data class Tags(
     val totalDisks: Int? = null,
     val releaseDate: LocalDate? = null,
     val genre: String? = null,
-    val isExplicit: Boolean = false,
+    val explicit: Boolean = false,
     val composer: String? = null,
     val performer: String? = null,
     val producer: String? = null,
@@ -38,7 +38,11 @@ data class Tags(
     val peak: String? = null,
     val bpm: String? = null,
     val url: String? = null,
-    val mediaId: String
+    val mediaId: String,
+    /**
+     * If set to `true`, a downloaded file will not be re-tagged.
+     */
+    val fileAlreadyTagged: Boolean = false
 ) {
 
     val hasSubtitle: Boolean
@@ -71,6 +75,39 @@ data class Tags(
     val hasGenre: Boolean
         get() = !genre.isNullOrEmpty()
 
+    val hasComposer: Boolean
+        get() = !composer.isNullOrEmpty()
+
+    val hasPerformer: Boolean
+        get() = !performer.isNullOrEmpty()
+
+    val hasProducer: Boolean
+        get() = !producer.isNullOrEmpty()
+
+    val hasMixer: Boolean
+        get() = !mixer.isNullOrEmpty()
+
+    val hasEngineer: Boolean
+        get() = !engineer.isNullOrEmpty()
+
+    val hasAuthor: Boolean
+        get() = !author.isNullOrEmpty()
+
+    val hasWriter: Boolean
+        get() = !writer.isNullOrEmpty()
+
+    val hasRecordLabel: Boolean
+        get() = !recordLabel.isNullOrEmpty()
+
+    val hasCopyright: Boolean
+        get() = !copyright.isNullOrEmpty()
+
+    val hasIsrc: Boolean
+        get() = !isrc.isNullOrEmpty()
+
+    val hasBarcode: Boolean
+        get() = !barcode.isNullOrEmpty()
+
     val hasGain: Boolean
         get() = !gain.isNullOrEmpty()
 
@@ -84,8 +121,9 @@ data class Tags(
         get() = !url.isNullOrEmpty()
 
     fun toBuilder(): Builder = Builder(
-        title, subtitle, artists, comment, album, albumArtist, trackNumber, totalTracks,
-        diskNumber, totalDisks, releaseDate, genre, isExplicit, gain, peak, bpm, url, mediaId
+        title, subtitle, artists, comment, album, albumArtist, trackNumber, totalTracks, diskNumber, totalDisks,
+        releaseDate, genre, explicit, composer, performer, producer, mixer, engineer, author, writer, recordLabel,
+        copyright, isrc, barcode, gain, peak, bpm, url, mediaId, fileAlreadyTagged
     )
 
     data class Builder(
@@ -117,37 +155,9 @@ data class Tags(
         var peak: String? = null,
         var bpm: String? = null,
         var url: String? = null,
-        var mediaId: String? = null
+        var mediaId: String? = null,
+        var fileAlreadyTagged: Boolean = false
     ) {
-        fun title(title: String) = apply { this.title = title }
-        fun subtitle(subtitle: String?) = apply { this.subtitle = subtitle }
-        fun artists(artists: List<String>) = apply { this.artists = artists }
-        fun comment(comment: String?) = apply { this.comment = comment }
-        fun album(album: String?) = apply { this.album = album }
-        fun albumArtist(albumArtist: String?) = apply { this.albumArtist = albumArtist }
-        fun trackNumber(trackNumber: Int?) = apply { this.trackNumber = trackNumber }
-        fun totalTracks(totalTracks: Int?) = apply { this.totalTracks = totalTracks }
-        fun diskNumber(diskNumber: Int?) = apply { this.diskNumber = diskNumber }
-        fun totalDisks(totalDisks: Int?) = apply { this.totalDisks = totalDisks }
-        fun releaseDate(releaseDate: LocalDate?) = apply { this.releaseDate = releaseDate }
-        fun genre(genre: String?) = apply { this.genre = genre }
-        fun explicit(explicit: Boolean) = apply { this.explicit = explicit }
-        fun composer(composer: String) = apply { this.composer = composer }
-        fun performer(performer: String) = apply { this.performer = performer }
-        fun producer(producer: String) = apply { this.producer = producer }
-        fun mixer(mixer: String) = apply { this.mixer = mixer }
-        fun engineer(engineer: String) = apply { this.engineer = engineer }
-        fun author(author: String) = apply { this.author = author }
-        fun writer(writer: String) = apply { this.writer = writer }
-        fun recordLabel(recordLabel: String) = apply { this.recordLabel = recordLabel }
-        fun copyright(copyright: String) = apply { this.copyright = copyright }
-        fun isrc(isrc: String) = apply { this.isrc = isrc }
-        fun barcode(barcode: String) = apply { this.barcode = barcode }
-        fun gain(gain: String?) = apply { this.gain = gain }
-        fun peak(peak: String?) = apply { this.peak = peak }
-        fun bpm(bpm: String?) = apply { this.bpm = bpm }
-        fun url(url: String?) = apply { this.url = url }
-        fun mediaId(mediaId: String) = apply { this.mediaId = mediaId }
         fun createTags() = Tags(
             requireNotNull(title), subtitle, requireNotNull(artists), comment,
             album, albumArtist, trackNumber, totalTracks, diskNumber, totalDisks, releaseDate,

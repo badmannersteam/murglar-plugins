@@ -4,6 +4,7 @@ import Versions
 import com.badmanners.murglar.lib.core.decrypt.Decryptor
 import com.badmanners.murglar.lib.core.localization.Messages
 import com.badmanners.murglar.lib.core.login.LoginResolver
+import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.tag.Lyrics
 import com.badmanners.murglar.lib.core.model.tag.Tags
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
@@ -101,8 +102,10 @@ interface Murglar<Track : BaseTrack> {
 
     /**
      * Return track's [Tags].
+     *
+     * @param parent optional context parent, like an album or playlist.
      */
-    suspend fun getTags(track: Track): Tags
+    suspend fun getTags(track: Track, parent: Node?): Tags
 
     /**
      * Returns all possible tracks by media ids.

@@ -5,6 +5,7 @@ import com.badmanners.murglar.lib.core.decrypt.NoopDecryptor
 import com.badmanners.murglar.lib.core.localization.DelegatingMessages
 import com.badmanners.murglar.lib.core.localization.Messages
 import com.badmanners.murglar.lib.core.log.LoggerMiddleware
+import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.tag.Lyrics
 import com.badmanners.murglar.lib.core.model.tag.Tags
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
@@ -46,21 +47,21 @@ abstract class BaseMurglar<Track : BaseTrack, Msg : Messages> @JvmOverloads prot
 
     override suspend fun getLyrics(track: Track): Lyrics = throw UnsupportedOperationException("getLyrics")
 
-    override suspend fun getTags(track: Track): Tags = Tags.Builder()
-        .title(track.title)
-        .subtitle(track.subtitle)
-        .artists(track.artistNames)
-        .album(track.albumName)
-        .trackNumber(track.indexInAlbum)
-        .diskNumber(track.volumeNumber)
-        .releaseDate(track.albumReleaseDate)
-        .genre(track.genre)
-        .explicit(track.explicit)
-        .gain(track.gain)
-        .peak(track.peak)
-        .url(track.serviceUrl)
-        .mediaId(track.mediaId)
-        .createTags()
+    override suspend fun getTags(track: Track, parent: Node?): Tags = Tags.Builder().apply {
+        title = track.title
+        subtitle = track.subtitle
+        artists = track.artistNames
+        album = track.albumName
+        trackNumber = track.indexInAlbum
+        diskNumber = track.volumeNumber
+        releaseDate = track.albumReleaseDate
+        genre = track.genre
+        explicit = track.explicit
+        gain = track.gain
+        peak = track.peak
+        url = track.serviceUrl
+        mediaId = track.mediaId
+    }.createTags()
 
 
     @Suppress("UNCHECKED_CAST")
