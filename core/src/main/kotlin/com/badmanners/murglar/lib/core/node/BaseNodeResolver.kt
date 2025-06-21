@@ -96,7 +96,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
                     val queryAwareSearchNodePattern = "${pattern}_query-<query>"
                     parameters += ParametersConfiguration(
                         pattern = queryAwareSearchNodePattern,
-                        parameters = it.parameters.copy(searchableContentNodeType = null)
+                        parameters = it.parameters.copy(isSearchable = false)
                     )
                     suppliers += SuppliersConfiguration(
                         pattern = queryAwareSearchNodePattern,

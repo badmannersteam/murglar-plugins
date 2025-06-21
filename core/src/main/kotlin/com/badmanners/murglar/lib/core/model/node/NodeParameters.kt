@@ -35,9 +35,18 @@ data class NodeParameters(
     val isLikeable: Boolean,
 
     /**
-     * [NodeType] of content nodes from searchable node.
+     * true if this [Node] is unspecified 'search' node
+     * and can be passed to [NodeResolver.specifySearchableNode].
      */
-    val searchableContentNodeType: String? = null
+    val isSearchable: Boolean,
+
+    /**
+     * [NodeType] of nodes in this node.
+     * Must be:
+     * - [NodeType.NODE] if this node contains mixed content
+     * - [NodeType.TRACK] if this node is a track node
+     */
+    val contentNodeType: String
 
 ) : Serializable {
 
@@ -46,14 +55,6 @@ data class NodeParameters(
      */
     val isPageable: Boolean
         get() = pagingType != NON_PAGEABLE
-
-    /**
-     * true if this [Node] is unspecified 'search' node
-     * and can be passed to [NodeResolver.specifySearchableNode].
-     */
-    val isSearchable: Boolean
-        get() = searchableContentNodeType != null
-
 
     /**
      * Types of lists paging.
@@ -78,20 +79,16 @@ data class NodeParameters(
 
 
     companion object {
-        private const val serialVersionUID = 1L
 
-        fun rootDirectory(pagingType: PagingType, hasSubdirectories: Boolean) =
-            directory(pagingType, hasSubdirectories, false)
+        fun rootDirectory(pagingType: PagingType, hasSubdirectories: Boolean, contentNodeType: String) =
+            directory(pagingType, hasSubdirectories, false, contentNodeType)
 
-        fun searchableRootDirectory(
-            pagingType: PagingType,
-            hasSubdirectories: Boolean,
-            searchableContentNodeType: String
-        ) = NodeParameters(true, pagingType, hasSubdirectories, false, searchableContentNodeType)
+        fun searchableRootDirectory(pagingType: PagingType, hasSubdirectories: Boolean, contentNodeType: String) =
+            NodeParameters(true, pagingType, hasSubdirectories, false, true, contentNodeType)
 
-        fun directory(pagingType: PagingType, hasSubdirectories: Boolean, likeable: Boolean) =
-            NodeParameters(true, pagingType, hasSubdirectories, likeable)
+        fun directory(pagingType: PagingType, hasSubdirectories: Boolean, likeable: Boolean, contentNodeType: String) =
+            NodeParameters(true, pagingType, hasSubdirectories, likeable, false, contentNodeType)
 
-        fun track(likeable: Boolean) = NodeParameters(false, NON_PAGEABLE, false, likeable)
+        fun track(likeable: Boolean) = NodeParameters(false, NON_PAGEABLE, false, likeable, false, NodeType.TRACK)
     }
 }

@@ -61,6 +61,7 @@ data class Root(
     val name: () -> String,
     val paging: PagingType,
     val hasSubdirectories: Boolean,
+    val contentNodeType: String,
     /**
      * @see NodeResolver.isOwnNode
      */
@@ -70,7 +71,7 @@ data class Root(
     override val nodeWithContentSupplier: NodeWithContentSupplier? = null
 ) : GenericConfiguration {
     override val nodeSupplier = null
-    override val parameters = NodeParameters.rootDirectory(paging, hasSubdirectories)
+    override val parameters = NodeParameters.rootDirectory(paging, hasSubdirectories, contentNodeType)
 }
 
 /**
@@ -81,12 +82,12 @@ data class Search(
     val name: () -> String,
     val paging: PagingType = ENDLESSLY_PAGEABLE,
     val hasSubdirectories: Boolean,
-    val contentType: String,
+    val contentNodeType: String,
     override val nodeContentSupplier: NodeContentSupplier
 ) : GenericConfiguration {
     override val nodeSupplier = null
     override val nodeWithContentSupplier = null
-    override val parameters = NodeParameters.searchableRootDirectory(paging, hasSubdirectories, contentType)
+    override val parameters = NodeParameters.searchableRootDirectory(paging, hasSubdirectories, contentNodeType)
 }
 
 /**
@@ -96,11 +97,12 @@ data class Directory(
     override val pattern: String,
     val paging: PagingType,
     val hasSubdirectories: Boolean,
+    val contentNodeType: String,
     override val nodeSupplier: NodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null
 ) : GenericConfiguration {
     override val nodeWithContentSupplier = null
-    override val parameters = NodeParameters.directory(paging, hasSubdirectories, false)
+    override val parameters = NodeParameters.directory(paging, hasSubdirectories, false, contentNodeType)
 }
 
 /**
@@ -112,6 +114,7 @@ data class MappedEntity(
     val paging: PagingType,
     val hasSubdirectories: Boolean,
     override val type: String,
+    val contentNodeType: String,
     override val relatedPaths: RelatedNodePathsGenerator? = null,
     override val like: LikeConfig? = null,
     override val urlPatterns: List<String> = emptyList(),
@@ -120,7 +123,7 @@ data class MappedEntity(
     override val nodeContentSupplier: NodeContentSupplier? = null,
     override val nodeWithContentSupplier: NodeWithContentSupplier? = null
 ) : GenericConfiguration, EntityConfiguration {
-    override val parameters = NodeParameters.directory(paging, hasSubdirectories, like != null)
+    override val parameters = NodeParameters.directory(paging, hasSubdirectories, like != null, contentNodeType)
 }
 
 /**
@@ -140,7 +143,7 @@ data class UnmappedEntity(
     override val nodeWithContentSupplier = null
 
     //doesn't matter, just stub, not used
-    override val parameters = NodeParameters.directory(NON_PAGEABLE, false, like != null)
+    override val parameters = NodeParameters.directory(NON_PAGEABLE, false, like != null, NodeType.NODE)
 }
 
 /**
