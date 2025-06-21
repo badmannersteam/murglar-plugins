@@ -144,6 +144,13 @@ interface NodeResolver {
     suspend fun likeNode(node: Node, like: Boolean)
 
     /**
+     * Manager for playlists management.
+     *
+     * Not null if management is supported.
+     */
+    val playlistsManager: PlaylistsManager?
+
+    /**
      * Checks that this resolver most likely can load [Node] for the requested url.
      *
      * @param url url to the music service

@@ -52,6 +52,8 @@ class StubNodeResolver(
     override suspend fun likeNode(node: Node, like: Boolean) =
         throw UnsupportedOperationException("'likeNode' in stub node resolver")
 
+    override val playlistsManager: PlaylistsManager? = null
+
     override fun canGetNodeFromUrl(url: String) = false
 
     override suspend fun getNodeFromUrl(url: String) =

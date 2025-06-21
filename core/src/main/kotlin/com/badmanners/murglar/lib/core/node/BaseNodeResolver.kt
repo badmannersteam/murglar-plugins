@@ -279,6 +279,8 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         likeConfiguration.likeFunction.run { node.like(like) }
     }
 
+    override val playlistsManager: PlaylistsManager? = null
+
     override fun canGetNodeFromUrl(url: String): Boolean = matchFromCollection(
         url, config.urls, { it.urlPattern }, { it.nodeSupplier }) != null
 
