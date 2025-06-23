@@ -1,6 +1,6 @@
 package com.badmanners.murglar.lib.core.model.radio
 
-import com.badmanners.murglar.lib.core.model.node.BaseNode
+import com.badmanners.murglar.lib.core.model.node.MutableNode
 import com.badmanners.murglar.lib.core.model.node.NodeType
 import com.badmanners.murglar.lib.core.utils.contract.Model
 
@@ -10,9 +10,22 @@ import com.badmanners.murglar.lib.core.utils.contract.Model
  */
 @Model
 open class BaseRadio(
-    id: String,
-    name: String,
-    summary: String? = null,
-    smallCoverUrl: String? = null,
-    bigCoverUrl: String? = null
-) : BaseNode(id, name, summary, NodeType.RADIO, smallCoverUrl, bigCoverUrl)
+    val id: String,
+    val title: String,
+    val description: String? = null,
+    override val smallCoverUrl: String? = null,
+    override val bigCoverUrl: String? = null,
+    /**
+     * Radio settings metadata, empty if settings are unsupported.
+     */
+    val settings: List<RadioSetting> = emptyList()
+) : MutableNode() {
+    override val nodeId: String by ::id
+    override val nodeName: String by ::title
+    override val nodeSummary: String? by ::description
+    override val nodeType: String = NodeType.RADIO
+    override val serviceUrl: String? = null
+
+    val hasSettings: Boolean
+        get() = settings.isNotEmpty()
+}

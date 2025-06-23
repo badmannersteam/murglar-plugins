@@ -9,13 +9,14 @@ import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.node.NodeParameters
 import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType.ENDLESSLY_PAGEABLE
-import com.badmanners.murglar.lib.core.model.node.NodeType
 import com.badmanners.murglar.lib.core.model.node.NodeType.ALBUM
 import com.badmanners.murglar.lib.core.model.node.NodeType.ARTIST
 import com.badmanners.murglar.lib.core.model.node.NodeType.PLAYLIST
 import com.badmanners.murglar.lib.core.model.node.NodeType.TRACK
-import com.badmanners.murglar.lib.core.model.node.NodeWithContent
+import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.model.radio.BaseRadio
+import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.node.BaseNodeResolver.InternalConfiguration.EventHandlerConfiguration
 import com.badmanners.murglar.lib.core.node.BaseNodeResolver.InternalConfiguration.LikeConfiguration
@@ -45,7 +46,7 @@ import kotlin.reflect.KClass
  * * getNodeParameters   : pattern    -> parameters
  * * getNode             : pattern    -> nodeSupplier
  * * getNodeContent      : pattern    -> nodeContentSupplier
- * * getRadioContent     : pattern    -> nodeWithContentSupplier
+ * * getRadioContent     : pattern    -> radioContentSupplier
  * * getRelatedNodePaths : nodeType   -> relatedNodes.pathsGenerator
  * * likeNode            : nodeType   -> likes.likeFunction
  * * handleEvent         : nodeType   -> eventHandler
@@ -76,12 +77,12 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             val pattern = it.pattern
             val nodeSupplier = it.nodeSupplier
             val nodeContentSupplier = it.nodeContentSupplier
-            val nodeWithContentSupplier = it.nodeWithContentSupplier
+            val radioContentSupplier = it.radioContentSupplier
 
             val hasAtLeastOneSupplier =
-                nodeSupplier != null || nodeContentSupplier != null || nodeWithContentSupplier != null
+                nodeSupplier != null || nodeContentSupplier != null || radioContentSupplier != null
 
-            check(nodeWithContentSupplier == null || it.parameters.pagingType == ENDLESSLY_PAGEABLE) {
+            check(radioContentSupplier == null || it.parameters.pagingType == ENDLESSLY_PAGEABLE) {
                 "Radio must have '$ENDLESSLY_PAGEABLE' paging!"
             }
 
@@ -89,7 +90,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
                 parameters += ParametersConfiguration(pattern, it.parameters)
 
             if (it !is Search && it !is UnmappedEntity && hasAtLeastOneSupplier)
-                suppliers += SuppliersConfiguration(pattern, nodeSupplier, nodeContentSupplier, nodeWithContentSupplier)
+                suppliers += SuppliersConfiguration(pattern, nodeSupplier, nodeContentSupplier, radioContentSupplier)
 
             when (it) {
                 is Search -> {
@@ -157,8 +158,8 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
                     else -> error("Unknown configuration type ${it.javaClass}!")
                 }
                 when {
-                    it is Root && it.rootNodeSupplier != null ->
-                        rootNode(it.rootNodeSupplier.createRootNode(it.pattern, name))
+                    it is Root && it.radioNodeSupplier != null ->
+                        rootNode(it.radioNodeSupplier.createRadioNode(it.pattern, name))
 
                     else -> rootNode(it.pattern, name)
                 }
@@ -248,19 +249,18 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             } ?: error("No configuration found for '$path'")
     }
 
-    override suspend fun getRadioContent(radioNode: Node): NodeWithContent {
-        val path = radioNode.nodePath
+    override suspend fun getRadioContent(radio: BaseRadio, settingsUpdate: RadioSettingsUpdate?): RadioNodeUpdate {
+        val path = radio.nodePath
 
         requireBelongsToThisResolver(path)
-        require(NodeType.RADIO == radioNode.nodeType) { "Invalid node type: '${radioNode.nodeType}'" }
 
         val subPath = path.subpath().toString()
-        return matchFromCollection(subPath, config.suppliers, { it.pattern }, { it.nodeWithContentSupplier })
+        return matchFromCollection(subPath, config.suppliers, { it.pattern }, { it.radioContentSupplier })
             ?.let {
-                val nodeWithContentSupplier = checkNotNull(it.value) {
-                    "Configuration '${it.pattern}' for '$path' found, but has no nodeWithContentSupplier!"
+                val radioContentSupplier = checkNotNull(it.value) {
+                    "Configuration '${it.pattern}' for '$path' found, but has no radioContentSupplier!"
                 }
-                nodeWithContentSupplier.getNodeWithContent(radioNode, it.parameters)
+                radioContentSupplier.getRadioContent(radio, settingsUpdate, it.parameters)
             } ?: error("No configuration found for '$path'")
     }
 
@@ -426,10 +426,10 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             val pattern: String,
             val nodeSupplier: NodeSupplier? = null,
             val nodeContentSupplier: NodeContentSupplier? = null,
-            val nodeWithContentSupplier: NodeWithContentSupplier? = null
+            val radioContentSupplier: RadioContentSupplier? = null
         ) {
             init {
-                require(nodeSupplier != null || nodeContentSupplier != null || nodeWithContentSupplier != null) {
+                require(nodeSupplier != null || nodeContentSupplier != null || radioContentSupplier != null) {
                     "No supplier specified!"
                 }
             }

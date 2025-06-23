@@ -6,8 +6,10 @@ import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.node.NodeParameters
 import com.badmanners.murglar.lib.core.model.node.NodeType
-import com.badmanners.murglar.lib.core.model.node.NodeWithContent
+import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.model.radio.BaseRadio
+import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.service.Murglar
 import com.badmanners.murglar.lib.core.utils.MediaId
@@ -110,9 +112,11 @@ interface NodeResolver {
     /**
      * Returns radio update - next part of radio tracks and updated radio node.
      *
-     * @param radioNode radio node from the nodes tree or updated radio node from the previous call of this method.
+     * @param radio radio node from the nodes tree or updated radio node from the previous call of this method.
+     * @param settingsUpdate radio settings update that reflects user choice,
+     *      `null` if settings are unsupported or remains unchanged.
      */
-    suspend fun getRadioContent(radioNode: Node): NodeWithContent
+    suspend fun getRadioContent(radio: BaseRadio, settingsUpdate: RadioSettingsUpdate?): RadioNodeUpdate
 
     /**
      * Returns true if this resolver supports likes/dislikes right now

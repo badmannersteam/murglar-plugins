@@ -5,6 +5,8 @@ import com.badmanners.murglar.lib.core.model.event.NamedAction
 import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.model.radio.BaseRadio
+import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import kotlin.reflect.KClass
 
@@ -42,7 +44,7 @@ class StubNodeResolver(
     override suspend fun getNodeContent(path: Path, page: Int?) =
         throw UnsupportedOperationException("'getNodeContent' in stub node resolver")
 
-    override suspend fun getRadioContent(radioNode: Node) =
+    override suspend fun getRadioContent(radio: BaseRadio, settingsUpdate: RadioSettingsUpdate?) =
         throw UnsupportedOperationException("'getRadioContent' in stub node resolver")
 
     override val supportsLikes = false

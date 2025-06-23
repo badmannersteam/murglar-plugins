@@ -1,7 +1,6 @@
 package com.badmanners.murglar.lib.core.node
 
 import com.badmanners.murglar.lib.core.model.event.Event
-import com.badmanners.murglar.lib.core.model.node.MutableNode
 import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.node.NodeParameters
@@ -9,9 +8,10 @@ import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType
 import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType.ENDLESSLY_PAGEABLE
 import com.badmanners.murglar.lib.core.model.node.NodeParameters.PagingType.NON_PAGEABLE
 import com.badmanners.murglar.lib.core.model.node.NodeType
-import com.badmanners.murglar.lib.core.model.node.NodeWithContent
+import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.node.Path
-import com.badmanners.murglar.lib.core.model.radio.RadioUpdate
+import com.badmanners.murglar.lib.core.model.radio.BaseRadio
+import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.utils.pattern.PatternMatcher
 import kotlin.reflect.KClass
 
@@ -33,7 +33,7 @@ sealed interface GenericConfiguration {
     val pattern: String
     val nodeSupplier: NodeSupplier?
     val nodeContentSupplier: NodeContentSupplier?
-    val nodeWithContentSupplier: NodeWithContentSupplier?
+    val radioContentSupplier: RadioContentSupplier?
     val parameters: NodeParameters
 }
 
@@ -61,14 +61,14 @@ data class Root(
     val name: () -> String,
     val paging: PagingType,
     val hasSubdirectories: Boolean,
-    val contentNodeType: String,
     /**
      * @see NodeResolver.isOwnNode
      */
     val isOwn: Boolean,
-    val rootNodeSupplier: RootNodeSupplier? = null,
+    val contentNodeType: String,
+    val radioNodeSupplier: RadioNodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null,
-    override val nodeWithContentSupplier: NodeWithContentSupplier? = null
+    override val radioContentSupplier: RadioContentSupplier? = null
 ) : GenericConfiguration {
     override val nodeSupplier = null
     override val parameters = NodeParameters.rootDirectory(paging, hasSubdirectories, contentNodeType)
@@ -86,7 +86,7 @@ data class Search(
     override val nodeContentSupplier: NodeContentSupplier
 ) : GenericConfiguration {
     override val nodeSupplier = null
-    override val nodeWithContentSupplier = null
+    override val radioContentSupplier = null
     override val parameters = NodeParameters.searchableRootDirectory(paging, hasSubdirectories, contentNodeType)
 }
 
@@ -101,7 +101,7 @@ data class Directory(
     override val nodeSupplier: NodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null
 ) : GenericConfiguration {
-    override val nodeWithContentSupplier = null
+    override val radioContentSupplier = null
     override val parameters = NodeParameters.directory(paging, hasSubdirectories, false, contentNodeType)
 }
 
@@ -121,7 +121,7 @@ data class MappedEntity(
     override val events: List<EventConfig<*>> = emptyList(),
     override val nodeSupplier: NodeSupplier? = null,
     override val nodeContentSupplier: NodeContentSupplier? = null,
-    override val nodeWithContentSupplier: NodeWithContentSupplier? = null
+    override val radioContentSupplier: RadioContentSupplier? = null
 ) : GenericConfiguration, EntityConfiguration {
     override val parameters = NodeParameters.directory(paging, hasSubdirectories, like != null, contentNodeType)
 }
@@ -140,7 +140,7 @@ data class UnmappedEntity(
     override val urlPatterns: List<String> = emptyList()
     override val nodeSupplier = null
     override val nodeContentSupplier = null
-    override val nodeWithContentSupplier = null
+    override val radioContentSupplier = null
 
     //doesn't matter, just stub, not used
     override val parameters = NodeParameters.directory(NON_PAGEABLE, false, like != null, NodeType.NODE)
@@ -160,7 +160,7 @@ data class Track(
     override val nodeSupplier: NodeSupplier? = null
 ) : GenericConfiguration, EntityConfiguration {
     override val nodeContentSupplier = null
-    override val nodeWithContentSupplier = null
+    override val radioContentSupplier = null
     override val parameters = NodeParameters.track(like != null)
 }
 
@@ -174,8 +174,8 @@ data class EventConfig<E : Event>(
     val eventHandler: EventHandler<E>,
 )
 
-fun interface RootNodeSupplier {
-    fun createRootNode(id: String, name: String): MutableNode
+fun interface RadioNodeSupplier {
+    fun createRadioNode(id: String, name: String): BaseRadio
 }
 
 /**
@@ -202,15 +202,20 @@ fun interface NodeContentSupplier {
 }
 
 /**
- * Supplier of [NodeWithContent].
- * Used mainly for [RadioUpdate]s.
+ * Supplier of [RadioNodeUpdate].
  */
-fun interface NodeWithContentSupplier {
+fun interface RadioContentSupplier {
     /**
-     * @param node   node for which content is requested
+     * @param radio radio node for which content is requested
+     * @param settingsUpdate radio settings update that reflects user choice,
+     *      `null` if settings are unsupported or remains unchanged
      * @param params map with parameters, extracted from path (ids/hashes/etc)
      */
-    suspend fun getNodeWithContent(node: Node, params: Map<String, String>): NodeWithContent
+    suspend fun getRadioContent(
+        radio: BaseRadio,
+        settingsUpdate: RadioSettingsUpdate?,
+        params: Map<String, String>
+    ): RadioNodeUpdate
 }
 
 fun interface LikeFunction {
