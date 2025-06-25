@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.noarg)
+    alias(libs.plugins.kotlin.allopen)
 }
 
 dependencies {
@@ -23,6 +24,10 @@ java {
 }
 
 noArg {
+    annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
+}
+
+allOpen {
     annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
 }
 

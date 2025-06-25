@@ -5,6 +5,7 @@ plugins {
     `java-library`
     id("kotlin")
     id("kotlin-noarg")
+    id("kotlin-allopen")
     id("kotlinx-serialization")
     id("com.gradleup.shadow")
 }
@@ -47,6 +48,10 @@ kotlin {
 }
 
 noArg {
+    annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
+}
+
+allOpen {
     annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
 }
 

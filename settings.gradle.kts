@@ -40,12 +40,14 @@ dependencyResolutionManagement {
 
             library("kotlin-gradle-plugin", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef("kotlin")
             library("kotlin-noarg", "org.jetbrains.kotlin", "kotlin-noarg").versionRef("kotlin")
+            library("kotlin-allopen", "org.jetbrains.kotlin", "kotlin-allopen").versionRef("kotlin")
             library("kotlin-serialization", "org.jetbrains.kotlin", "kotlin-serialization").versionRef("kotlin")
             library("android-build-plugin", "com.android.tools.build", "gradle").versionRef("android-build-plugin")
             library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").version("8.3.6")
 
             plugin("kotlin", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
             plugin("kotlin-noarg", "org.jetbrains.kotlin.plugin.noarg").versionRef("kotlin")
+            plugin("kotlin-allopen", "org.jetbrains.kotlin.plugin.allopen").versionRef("kotlin")
             plugin("buildconfig", "com.github.gmazzo.buildconfig").version("5.5.4")
             plugin("android-library-plugin", "com.android.library").versionRef("android-build-plugin")
         }

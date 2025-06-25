@@ -30,10 +30,12 @@ abstract class BaseAlbum(
 
     override val fullDescription: String
         get() = buildString {
-            if (releaseDate != null)
-                append(releaseDate.year).append(" - ")
-            if (!description.isNullOrEmpty())
+            releaseDate?.let {
+                append(it.year).append(" - ")
+            }
+            description.takeIf { !it.isNullOrEmpty() }?.let {
                 append(description).append(" - ")
+            }
             append(artistNames.joinToString(", "))
             if (tracksCount > 0) {
                 if (!isEmpty())

@@ -3,7 +3,7 @@ package com.badmanners.murglar.lib.core.node
 import com.badmanners.murglar.lib.core.localization.Messages
 import com.badmanners.murglar.lib.core.model.event.Event
 import com.badmanners.murglar.lib.core.model.event.NamedAction
-import com.badmanners.murglar.lib.core.model.node.BaseNode
+import com.badmanners.murglar.lib.core.model.node.Directory
 import com.badmanners.murglar.lib.core.model.node.MutableNode
 import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
@@ -13,8 +13,8 @@ import com.badmanners.murglar.lib.core.model.node.NodeType.ALBUM
 import com.badmanners.murglar.lib.core.model.node.NodeType.ARTIST
 import com.badmanners.murglar.lib.core.model.node.NodeType.PLAYLIST
 import com.badmanners.murglar.lib.core.model.node.NodeType.TRACK
-import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.radio.BaseRadio
 import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
@@ -381,12 +381,10 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
      */
     protected fun subdirectoryNode(node: MutableNode, parentPath: Path) = node(node, parentPath.child(node.nodeId))
 
-    protected fun node(nodeId: String, name: String, path: Path) = node(BaseNode(nodeId, name), path)
+    protected fun node(nodeId: String, name: String, path: Path) = node(Directory(nodeId, name), path)
 
-    protected fun node(node: MutableNode, path: Path): Node = node.apply {
-        withNodePath(path)
-        withNodeParameters(getNodeParameters(path))
-    }
+    protected fun node(node: MutableNode, path: Path): Node =
+        node.withNodePath(path).withNodeParameters(getNodeParameters(path))
 
 
     /**

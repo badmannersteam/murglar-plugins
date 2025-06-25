@@ -21,10 +21,7 @@ abstract class MutableNode : Node {
 
     fun withNodePath(path: Path) = apply { this.nodePath = path }
 
-    fun withNodeAttributes(from: Node): MutableNode = apply {
-        this.nodeParameters = from.nodeParameters
-        this.nodePath = from.nodePath
-    }
+    fun withNodeAttributes(from: Node) = withNodeParameters(from.nodeParameters).withNodePath(from.nodePath)
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

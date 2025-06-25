@@ -8,7 +8,7 @@ import com.badmanners.murglar.lib.core.utils.contract.Model
  * Batch of radio and next tracks.
  */
 @Model
-open class RadioUpdate<R : BaseRadio, T : BaseTrack>(
+class RadioUpdate<R : BaseRadio, T : BaseTrack>(
     val updatedRadio: R,
     val nextTracks: List<T>
 )

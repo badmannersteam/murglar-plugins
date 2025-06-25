@@ -28,7 +28,7 @@ abstract class BasePlaylist(
     val hasDescription: Boolean
         get() = !description.isNullOrEmpty()
 
-    open val fullDescription: String
+    val fullDescription: String
         get() = buildString {
             if (tracksCount > 0)
                 append(tracksCount).append(" ♫")
