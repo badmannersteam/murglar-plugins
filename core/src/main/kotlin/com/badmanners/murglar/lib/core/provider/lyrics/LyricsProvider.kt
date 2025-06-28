@@ -2,6 +2,7 @@ package com.badmanners.murglar.lib.core.provider.lyrics
 
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
 import com.badmanners.murglar.lib.core.provider.ProviderException
+import com.badmanners.murglar.lib.core.utils.RateLimit
 
 
 /**
@@ -18,6 +19,12 @@ interface LyricsProvider {
      * @return name of this provider (e.g. 'Genius').
      */
     val name: String
+
+    /**
+     * List of service rate limits.
+     * May be empty if no rate limits are required.
+     */
+    val rateLimits: List<RateLimit>
 
     /**
      * Searches for the lyrics for provided track.

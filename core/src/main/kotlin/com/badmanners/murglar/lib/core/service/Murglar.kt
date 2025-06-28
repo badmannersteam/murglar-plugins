@@ -13,6 +13,7 @@ import com.badmanners.murglar.lib.core.model.track.source.Extension
 import com.badmanners.murglar.lib.core.model.track.source.Source
 import com.badmanners.murglar.lib.core.node.NodeResolver
 import com.badmanners.murglar.lib.core.preference.Preference
+import com.badmanners.murglar.lib.core.utils.RateLimit
 import java.util.Locale
 
 
@@ -63,6 +64,12 @@ interface Murglar<Track : BaseTrack> {
      *  Descending list of all possible formats, that [Source]s from this [Murglar] can contain.
      */
     val possibleFormats: List<Pair<Extension, Bitrate>>
+
+    /**
+     * List of service rate limits.
+     * May be empty if no rate limits are required.
+     */
+    val rateLimits: List<RateLimit>
 
     /**
      * [LoginResolver] for this [Murglar].

@@ -13,6 +13,7 @@ import com.badmanners.murglar.lib.core.network.NetworkMiddleware
 import com.badmanners.murglar.lib.core.notification.NotificationMiddleware
 import com.badmanners.murglar.lib.core.preference.Preference
 import com.badmanners.murglar.lib.core.preference.PreferenceMiddleware
+import com.badmanners.murglar.lib.core.utils.RateLimit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Proxy
 import java.util.Locale
@@ -40,6 +41,8 @@ abstract class BaseMurglar<Track : BaseTrack, Msg : Messages> @JvmOverloads prot
     override var locale by messagesHandler::currentLocale
 
     override val murglarPreferences = emptyList<Preference>()
+
+    override val rateLimits = emptyList<RateLimit>()
 
     override suspend fun onCreate() = Unit
 
