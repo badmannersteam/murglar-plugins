@@ -16,8 +16,8 @@ sealed interface Event
 sealed interface PlayerEvent : Event {
     object TrackStart : PlayerEvent
     data class TrackEnd(val endTimeMs: Int) : PlayerEvent
-    object AddDislike : PlayerEvent
-    object RemoveDislike : PlayerEvent
+    object DislikeTrack : PlayerEvent
+    object DislikeArtist : PlayerEvent
 }
 
 /**
