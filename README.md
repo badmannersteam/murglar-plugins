@@ -74,15 +74,18 @@ major part.
 
 4. Add to the `build.gradle.kts` of the `<plugin_name>-core` module:
    ```kotlin
+   import Murglar_gradle_plugin_core_gradle.MurglarPluginExtension.PluginType
+   
    plugins {
        id("murglar-gradle-plugin-core") version "<latest_version>"       // fix this to actual version
    }
    
    murglarPlugin {
-       id = "sample"                                                     // your plugin id
-       name = "Sample"                                                   // your plugin human-readable name (in English)
-       version = "1"                                                     // plugin version (minor)
-       murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - Murglar implementation class
+       id = "sample"                                                        // your plugin id
+       name = "Sample"                                                      // your plugin human-readable name (in English)
+       version = 1                                                          // plugin version (minor)
+       type = PluginType.MURGLAR                                            // plugin type
+       entryPointClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - Murglar implementation class
    }
    
    dependencies {
@@ -101,6 +104,8 @@ major part.
 
 5. Add to the `build.gradle.kts` of the `<plugin_name>-android` module:
    ```kotlin
+   import Murglar_gradle_plugin_android_gradle.MurglarPluginExtension.PluginType
+   
    plugins {
        id("murglar-gradle-plugin-android") version "<latest_version>"  // fix this to actual version
    }
@@ -109,7 +114,8 @@ major part.
        id = "sample"
        name = "Sample"
        version = 1
-       murglarClass = "com.badmanners.murglar.lib.sample.SampleMurglar"
+       type = PluginType.MURGLAR
+       entryPointClass = "com.badmanners.murglar.lib.sample.SampleMurglar"
    }
    
    dependencies {
@@ -117,8 +123,8 @@ major part.
    }
    ```
 
-6. Add 24dp vector icon of the service (don't use `?attr/…`) to the `<plugin_name>-core/src/main/resources/icon.xml` and
-   `<plugin_name>-android/src/main/res/drawable/icon.xml`.
+6. Add 24dp vector icon of the service (don't use `?attr/…` or `@android/…` tags) to the
+   `<plugin_name>-core/src/main/resources/icon.xml` and `<plugin_name>-android/src/main/res/drawable/icon.xml`.
 
 7. Complete Android module with `AndroidManifest.xml` in the `<plugin_name>-android/src/main/AndroidManifest.xml` -
    manifest can be empty (with only `<manifest/>` tag) if your plugin doesn't support http/deeplinks
