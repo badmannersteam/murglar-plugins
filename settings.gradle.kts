@@ -21,7 +21,7 @@ dependencyResolutionManagement {
             google()
         }
         create("libs") {
-            version("murglar-plugins", "5.1-SNAPSHOT")
+            version("murglar-plugins", "6.0")
 
             version("kotlin", "2.1.21")
             version("android-build-plugin", "8.10.1")
