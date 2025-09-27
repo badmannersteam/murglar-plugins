@@ -27,7 +27,7 @@ abstract class BaseTrack(
     val genre: String? = null,
     val explicit: Boolean = false,
     val gain: String? = null,
-    val peak: String? = null,
+    val peak: Double? = null,
     /**
      * List of all track's sources, descending by bitrate and priority.
      */
@@ -90,7 +90,7 @@ abstract class BaseTrack(
         get() = !gain.isNullOrEmpty()
 
     val hasPeak: Boolean
-        get() = !peak.isNullOrEmpty()
+        get() = peak != null
 
     override fun equals(other: Any?): Boolean {
         if (this === other)
