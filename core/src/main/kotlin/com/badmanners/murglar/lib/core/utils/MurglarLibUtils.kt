@@ -16,10 +16,10 @@ import kotlin.contracts.contract
 object MurglarLibUtils {
 
     const val CHROME_DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
 
     const val CHROME_MOBILE_USER_AGENT = "Mozilla/5.0 (Linux; Android 13; Pixel 8) " +
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.71 Mobile Safari/537.36"
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.7444.49 Mobile Safari/537.36"
 
     private val DASHES_NORMALIZER = "[\u1806\u2010\u2011\u2012\u2013\u2014\u2015\u2212\u2043\u02D7\u2796\\-]+".toRegex()
 
