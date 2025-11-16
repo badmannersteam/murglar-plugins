@@ -14,7 +14,6 @@ interface WebViewProvider {
      *
      * @param enableJS              whether JavaScript should be enabled or disabled
      * @param userAgent             required useragent or null for default
-     * @param helpText              some guides for end user about web login
      * @param startUrl              initial login url
      * @param domainsForCookiesSync list of domains for which cookies must be synced after login
      * from webview cookies store to the [NetworkMiddleware] impl cookies store
@@ -24,7 +23,6 @@ interface WebViewProvider {
     suspend fun startWebView(
         enableJS: Boolean,
         userAgent: String?,
-        helpText: String?,
         startUrl: String,
         domainsForCookiesSync: List<String>,
         resolver: UrlLoadPolicyResolver
