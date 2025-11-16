@@ -52,4 +52,10 @@ abstract class BaseAlbum(
 
     val artistId: String?
         get() = artistIds.firstOrNull()
+
+    val artists: String
+        get() = artistNames.joinToString(", ")
+
+    val tag: String
+        get() = "$artists - $title"
 }

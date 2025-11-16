@@ -1,6 +1,6 @@
 package com.badmanners.murglar.lib.core.provider.cover
 
-import com.badmanners.murglar.lib.core.model.track.BaseTrack
+import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.provider.ProviderException
 import com.badmanners.murglar.lib.core.utils.RateLimit
 
@@ -27,11 +27,11 @@ interface CoverProvider {
     val rateLimits: List<RateLimit>
 
     /**
-     * Searches for the cover for provided track.
+     * Searches the covers for the provided node.
      *
      * @return [CoverSearchResult] optional if any suitable result found,
-     * empty optional if no cover found or found results don't match the query at all.
+     * empty optional if no covers found or found results don't match the query at all.
      * @throws ProviderException if cover search failed.
      */
-    suspend fun searchCover(track: BaseTrack): CoverSearchResult?
+    suspend fun searchCover(node: Node): CoverSearchResult?
 }
