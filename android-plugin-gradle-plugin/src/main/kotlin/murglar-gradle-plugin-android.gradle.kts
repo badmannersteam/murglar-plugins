@@ -78,19 +78,21 @@ android {
             proguardFiles += getDefaultProguardFile("proguard-android.txt")
         }
     }
+
+    packaging {
+        resources {
+            excludes += "murglar_icon.xml"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 kotlin {
     jvmToolchain(17)
-}
-
-tasks.named("check") {
-    doFirst {
-        val iconFile = project.file("src/main/res/drawable/icon.xml")
-        check(iconFile.exists()) {
-            "No plugin icon found (${iconFile.path})!"
-        }
-    }
 }
 
 fun localProperties() = Properties().apply {
@@ -111,10 +113,6 @@ interface MurglarPluginExtension {
     val fullName get() = "Murglar plugin for ${name.get()}"
     val fullVersion get() = "${Versions.murglarPluginsMajor}.${version.get()}"
     val apkName get() = "murglar-plugin-${id.get()}-${fullVersion}.apk"
-
-    enum class PluginType {
-        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER, TAGS_PROVIDER
-    }
 }
 
 val pluginExtension = extensions.create<MurglarPluginExtension>("murglarAndroidPlugin")
@@ -123,6 +121,17 @@ val currentProjectName: String = project.name
 gradle.afterProject {
     if (name != currentProjectName)
         return@afterProject
+
+    val pluginType = pluginExtension.type.convention(PluginType.MURGLAR).get()
+
+    if (pluginType == PluginType.MURGLAR) {
+        val copyPluginIconTask = tasks.register<CopyPluginIconTask>("copyPluginIcon")
+        androidComponents {
+            onVariants { variant ->
+                variant.sources.res?.addGeneratedSourceDirectory(copyPluginIconTask, CopyPluginIconTask::outputDir)
+            }
+        }
+    }
 
     android {
         namespace = pluginExtension.appId
@@ -137,7 +146,7 @@ gradle.afterProject {
                 "pluginId" to pluginExtension.id.get(),
                 "pluginName" to pluginExtension.name.get(),
                 "pluginFullName" to pluginExtension.fullName,
-                "pluginType" to pluginExtension.type.convention(MurglarPluginExtension.PluginType.MURGLAR).get(),
+                "pluginType" to pluginType,
                 "pluginEntryPointClass" to pluginExtension.entryPointClass.get(),
                 "pluginVersion" to pluginExtension.version.get(),
                 "pluginLibVersion" to Versions.murglarPluginsMajor

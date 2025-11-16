@@ -1,0 +1,3 @@
+enum class PluginType {
+    MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER, TAGS_PROVIDER
+}

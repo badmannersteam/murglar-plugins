@@ -24,7 +24,7 @@ dependencyResolutionManagement {
             version("murglar-plugins", "6.2-SNAPSHOT")
 
             version("kotlin", "2.2.21")
-            version("android-build-plugin", "8.10.1")
+            version("android-build-plugin", "8.13.1")
 
             version("min-sdk", "21")
             version("target-sdk", "35")

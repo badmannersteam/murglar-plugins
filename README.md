@@ -74,8 +74,6 @@ major part.
 
 4. Add to the `build.gradle.kts` of the `<plugin_name>-core` module:
    ```kotlin
-   import Murglar_gradle_plugin_core_gradle.MurglarPluginExtension.PluginType
-   
    plugins {
        id("murglar-gradle-plugin-core") version "<latest_version>"       // fix this to actual version
    }
@@ -85,7 +83,7 @@ major part.
        name = "Sample"                                                      // your plugin human-readable name (in English)
        version = 1                                                          // plugin version (minor)
        type = PluginType.MURGLAR                                            // plugin type
-       entryPointClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - Murglar implementation class
+       entryPointClass = "com.badmanners.murglar.lib.sample.SampleMurglar"  // entry point - main plugin implementation class
    }
    
    dependencies {
@@ -102,10 +100,11 @@ major part.
    }
    ```
 
-5. Add to the `build.gradle.kts` of the `<plugin_name>-android` module:
+5. For `MURGLAR` plugin type only - add 24dp vector icon of the service (don't use `?attr/…` or `@android/…` tags)
+   to the `<plugin_name>-core/src/main/resources/murglar_icon.xml`.
+
+6. Add to the `build.gradle.kts` of the `<plugin_name>-android` module:
    ```kotlin
-   import Murglar_gradle_plugin_android_gradle.MurglarPluginExtension.PluginType
-   
    plugins {
        id("murglar-gradle-plugin-android") version "<latest_version>"  // fix this to actual version
    }
@@ -123,12 +122,9 @@ major part.
    }
    ```
 
-6. Add 24dp vector icon of the service (don't use `?attr/…` or `@android/…` tags) to the
-   `<plugin_name>-core/src/main/resources/icon.xml` and `<plugin_name>-android/src/main/res/drawable/icon.xml`.
-
 7. Complete Android module with `AndroidManifest.xml` in the `<plugin_name>-android/src/main/AndroidManifest.xml` -
    manifest can be empty (with only `<manifest/>` tag) if your plugin doesn't support http/deeplinks
-   or contain intent-filters otherwise:
+   or contains intent-filters otherwise:
     ```xml
     <manifest xmlns:android="http://schemas.android.com/apk/res/android">
         <application>

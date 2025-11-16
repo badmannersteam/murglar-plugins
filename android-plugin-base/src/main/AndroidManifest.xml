@@ -16,10 +16,10 @@
             android:name="murglar.plugin.name"
             android:value="${pluginName}" />
         <meta-data
-            android:name="murglar.plugin.pluginType"
+            android:name="murglar.plugin.type"
             android:value="${pluginType}" />
         <meta-data
-            android:name="murglar.plugin.pluginEntryPointClass"
+            android:name="murglar.plugin.entryPointClass"
             android:value="${pluginEntryPointClass}" />
         <meta-data
             android:name="murglar.plugin.version"

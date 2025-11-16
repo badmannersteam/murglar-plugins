@@ -73,10 +73,6 @@ interface MurglarPluginExtension {
 
     val fullVersion
         get() = "${Versions.murglarPluginsMajor}.${version.get()}${if (snapshot.getOrElse(false)) "-SNAPSHOT" else ""}"
-
-    enum class PluginType {
-        MURGLAR, COVERS_PROVIDER, LYRICS_PROVIDER, TAGS_PROVIDER
-    }
 }
 
 val pluginExtension = extensions.create<MurglarPluginExtension>("murglarPlugin")
@@ -87,7 +83,7 @@ afterEvaluate {
 
     version = pluginExtension.fullVersion
 
-    val pluginType = pluginExtension.type.convention(MurglarPluginExtension.PluginType.MURGLAR)
+    val pluginType = pluginExtension.type.convention(PluginType.MURGLAR)
 
     tasks.shadowJar {
         archiveBaseName = pluginExtension.id.map { "murglar-plugin-$it" }
@@ -96,17 +92,17 @@ afterEvaluate {
         manifest.attributes.apply {
             set("Plugin-Id", pluginExtension.id)
             set("Plugin-Name", pluginExtension.name)
-            set("Plugin-Type", pluginType.map(MurglarPluginExtension.PluginType::name))
+            set("Plugin-Type", pluginType.map(PluginType::name))
             set("Plugin-Entry-Point-Class", pluginExtension.entryPointClass)
             set("Plugin-Version", pluginExtension.version.map(Int::toString))
             set("Plugin-Lib-Version", Versions.murglarPluginsMajor)
         }
     }
 
-    if (pluginType.get() == MurglarPluginExtension.PluginType.MURGLAR)
+    if (pluginType.get() == PluginType.MURGLAR)
         tasks.named("check") {
             doFirst {
-                val iconFile = project.file("src/main/resources/icon.xml")
+                val iconFile = project.file("src/main/resources/murglar_icon.xml")
                 check(iconFile.exists()) {
                     "No plugin icon found (${iconFile.path})!"
                 }
