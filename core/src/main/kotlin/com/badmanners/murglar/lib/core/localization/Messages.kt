@@ -9,6 +9,33 @@ import com.badmanners.murglar.lib.core.service.Murglar
  * Implemented as interface for easy i18n on the different platforms and frameworks.
  */
 interface Messages {
+
+    companion object {
+
+        fun Messages.loginWith(
+            web: Boolean = false,
+            token: Boolean = false,
+            cookie: Boolean = false,
+            email: Boolean = false,
+            username: Boolean = false,
+            phone: Boolean = false
+        ): String {
+            val credentials = listOfNotNull(
+                this.web.takeIf { web },
+                this.token.takeIf { token },
+                this.cookie.takeIf { cookie },
+                this.email.takeIf { email },
+                this.username.takeIf { username },
+                this.phone.takeIf { phone }
+            ).joinToString("/")
+            return "$loginWith $credentials"
+        }
+
+        val Messages.youAreLoggedInWithServiceName: String get() = "$youAreLoggedIn $serviceName"
+        val Messages.youAreNotLoggedInWithServiceName: String get() = "$youAreNotLoggedIn $serviceName"
+        val Messages.sessionUpdateFailedWithServiceName: String get() = "$serviceName: $sessionUpdateFailed"
+    }
+
     val serviceName: String
     val loginWith: String
     val web: String
@@ -18,32 +45,11 @@ interface Messages {
     val username: String
     val phone: String
     val password: String
-    fun loginWith(
-        web: Boolean = false,
-        token: Boolean = false,
-        cookie: Boolean = false,
-        email: Boolean = false,
-        username: Boolean = false,
-        phone: Boolean = false
-    ): String {
-        val credentials = listOfNotNull(
-            this.web.takeIf { web },
-            this.token.takeIf { token },
-            this.cookie.takeIf { cookie },
-            this.email.takeIf { email },
-            this.username.takeIf { username },
-            this.phone.takeIf { phone }
-        ).joinToString("/")
-        return "$loginWith $credentials"
-    }
     val copy: String
     val invalidCredentials: String
     val youAreLoggedIn: String
-    val youAreLoggedInWithServiceName: String get() = "$youAreLoggedIn $serviceName"
     val youAreNotLoggedIn: String
-    val youAreNotLoggedInWithServiceName: String get() = "$youAreNotLoggedIn $serviceName"
     val sessionUpdateFailed: String
-    val sessionUpdateFailedWithServiceName: String get() = "$serviceName: $sessionUpdateFailed"
     val anErrorHasOccurred: String
     val illegalResponseFormat: String
     val sourceUrlUnavailable: String

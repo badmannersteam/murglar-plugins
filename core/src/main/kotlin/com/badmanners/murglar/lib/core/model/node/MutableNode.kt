@@ -14,6 +14,8 @@ import com.badmanners.murglar.lib.core.utils.contract.Model
 @Model
 abstract class MutableNode : Node {
 
+    override val comparableId: String get() = nodeId
+
     final override lateinit var nodeParameters: NodeParameters
     final override lateinit var nodePath: Path
 

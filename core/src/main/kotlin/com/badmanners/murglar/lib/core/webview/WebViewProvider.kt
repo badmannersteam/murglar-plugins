@@ -34,8 +34,7 @@ interface WebViewProvider {
     /**
      * Resolver, that decides to load passed URL or not.
      */
-    @FunctionalInterface
-    fun interface UrlLoadPolicyResolver {
+    interface UrlLoadPolicyResolver {
 
         /**
          * Must be called by a webview before loading the requested url.
@@ -51,7 +50,7 @@ interface WebViewProvider {
          * @param url url of the resource/xhr that is planned to be loaded
          * @return resolved load policy
          */
-        fun resolveResourceLoadPolicy(url: String): UrlLoadPolicy = UrlLoadPolicy.ALLOW_LOAD
+        fun resolveResourceLoadPolicy(url: String): UrlLoadPolicy
     }
 
 

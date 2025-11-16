@@ -16,8 +16,10 @@ import com.badmanners.murglar.lib.core.webview.WebViewProvider.UrlLoadPolicyReso
  */
 interface LoginResolver {
 
-    val isLoginSupported: Boolean
-        get() = webLoginVariants.isNotEmpty() || credentialsLoginVariants.isNotEmpty()
+    companion object {
+        val LoginResolver.isLoginSupported: Boolean
+            get() = webLoginVariants.isNotEmpty() || credentialsLoginVariants.isNotEmpty()
+    }
 
     /**
      * True, if user logged in the service, false otherwise.

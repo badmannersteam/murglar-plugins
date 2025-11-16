@@ -13,25 +13,28 @@ import java.nio.charset.Charset
 /**
  * Response body content converter from bytes stream.
  */
-fun interface ResponseConverter<T> {
+interface ResponseConverter<T> {
 
     /**
      * Client must drop loading body of response, if true.
      * In this case [emptyResult] will be returned instead of result of [convert].
      */
     val dropBody: Boolean
-        get() = false
 
     /**
      * Result when body is dropped.
      */
     val emptyResult: T
-        get() = error("No body!")
 
     /**
      * Performs response body content conversion.
      */
     suspend fun convert(stream: InputStream, charset: Charset): T
+}
+
+abstract class BaseResponseConverter<T> : ResponseConverter<T> {
+    override val dropBody = false
+    override val emptyResult: T get() = error("No body!")
 }
 
 
@@ -53,16 +56,24 @@ object ResponseConverters {
     }
 
     @JvmStatic
-    fun asByteArray() = ResponseConverter { stream, _ -> stream.readBytes() }
+    fun asByteArray() = object : BaseResponseConverter<ByteArray>() {
+        override suspend fun convert(stream: InputStream, charset: Charset) = stream.readBytes()
+    }
 
     @JvmStatic
-    fun asString() = ResponseConverter { stream, charset -> String(stream.readBytes(), charset) }
+    fun asString() = object : BaseResponseConverter<String>() {
+        override suspend fun convert(stream: InputStream, charset: Charset) = String(stream.readBytes(), charset)
+    }
 
     @JvmStatic
-    fun asJsonObject() = ResponseConverter { stream, _ -> decodeFromStreamCompat<JsonObject>(stream) }
+    fun asJsonObject() = object : BaseResponseConverter<JsonObject>() {
+        override suspend fun convert(stream: InputStream, charset: Charset) = decodeFromStreamCompat<JsonObject>(stream)
+    }
 
     @JvmStatic
-    fun asJsonArray() = ResponseConverter { stream, _ -> decodeFromStreamCompat<JsonArray>(stream) }
+    fun asJsonArray() = object : BaseResponseConverter<JsonArray>() {
+        override suspend fun convert(stream: InputStream, charset: Charset) = decodeFromStreamCompat<JsonArray>(stream)
+    }
 
 
     private inline fun <reified T> decodeFromStreamCompat(stream: InputStream) = when {

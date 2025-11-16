@@ -8,8 +8,6 @@ import com.badmanners.murglar.lib.core.webview.WebViewProvider
  */
 class NoLoginResolver : LoginResolver {
 
-    override val isLoginSupported = false
-
     override val isLogged = false
 
     override val loginInfo = "Login not supported"

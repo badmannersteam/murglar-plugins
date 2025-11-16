@@ -52,13 +52,6 @@ interface Node : Serializable {
      * but this nodes must be treated as equal in the "likes/dislikes" functionality.
      */
     val comparableId: String
-        get() = nodeId
-
-    /**
-     * true if node has any cover (at least small), false otherwise.
-     */
-    val hasCover: Boolean
-        get() = !smallCoverUrl.isNullOrEmpty() || !bigCoverUrl.isNullOrEmpty()
 
     /**
      * Url of the small cover, if exists.
@@ -69,22 +62,6 @@ interface Node : Serializable {
      * Url of the big cover, if exists.
      */
     val bigCoverUrl: String?
-
-    /**
-     * Url of the best (biggest) cover, if exists.
-     */
-    val bestCoverUrl: String?
-        get() = when {
-            !bigCoverUrl.isNullOrEmpty() -> bigCoverUrl
-            !smallCoverUrl.isNullOrEmpty() -> smallCoverUrl
-            else -> null
-        }
-
-    /**
-     * true if node has url to its music service, false otherwise.
-     */
-    val hasServiceUrl: Boolean
-        get() = !serviceUrl.isNullOrEmpty()
 
     /**
      * Url of the node in the music service.
@@ -105,6 +82,28 @@ interface Node : Serializable {
 
 
     companion object {
+
+        /**
+         * true if node has any cover (at least small), false otherwise.
+         */
+        val Node.hasCover: Boolean
+            get() = !smallCoverUrl.isNullOrEmpty() || !bigCoverUrl.isNullOrEmpty()
+
+        /**
+         * Url of the best (biggest) cover, if exists.
+         */
+        val Node.bestCoverUrl: String?
+            get() = when {
+                !bigCoverUrl.isNullOrEmpty() -> bigCoverUrl
+                !smallCoverUrl.isNullOrEmpty() -> smallCoverUrl
+                else -> null
+            }
+
+        /**
+         * true if node has url to its music service, false otherwise.
+         */
+        val Node.hasServiceUrl: Boolean
+            get() = !serviceUrl.isNullOrEmpty()
 
         /**
          * Converts track node to the [BaseTrack] subclass.

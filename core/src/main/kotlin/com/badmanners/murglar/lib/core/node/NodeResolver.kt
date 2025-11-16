@@ -6,11 +6,12 @@ import com.badmanners.murglar.lib.core.model.node.NamedPath
 import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.node.NodeParameters
 import com.badmanners.murglar.lib.core.model.node.NodeType
-import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.node.Path
+import com.badmanners.murglar.lib.core.model.node.RadioNodeUpdate
 import com.badmanners.murglar.lib.core.model.radio.BaseRadio
 import com.badmanners.murglar.lib.core.model.radio.RadioSettingsUpdate
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
+import com.badmanners.murglar.lib.core.node.NodeResolver.Companion.getNodeContent
 import com.badmanners.murglar.lib.core.service.Murglar
 import com.badmanners.murglar.lib.core.utils.MediaId
 import kotlin.reflect.KClass
@@ -107,7 +108,7 @@ interface NodeResolver {
      * @param path path of the [Node].
      * @param page 0-based page if [NodeParameters.isPageable] or null otherwise
      */
-    suspend fun getNodeContent(path: Path, page: Int? = null): List<Node>
+    suspend fun getNodeContent(path: Path, page: Int?): List<Node>
 
     /**
      * Returns radio update - next part of radio tracks and updated radio node.
@@ -198,4 +199,14 @@ interface NodeResolver {
      * @see MediaId
      */
     suspend fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack>
+
+    companion object {
+        /**
+         * Returns content (list of child [Node]s) for node with requested [Path].
+         *
+         * @param path path of the [Node].
+         * @param page 0-based page if [NodeParameters.isPageable] or null otherwise
+         */
+        suspend fun NodeResolver.getNodeContent(path: Path): List<Node> = getNodeContent(path, null)
+    }
 }
