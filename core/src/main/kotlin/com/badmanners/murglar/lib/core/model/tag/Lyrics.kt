@@ -1,11 +1,14 @@
 package com.badmanners.murglar.lib.core.model.tag
 
+import com.badmanners.murglar.lib.core.utils.contract.Model
 import org.apache.commons.lang3.time.DurationFormatUtils.formatDuration
+import java.io.Serializable
 
 
 /**
  * Lyrics content.
  */
+@Model
 data class Lyrics @JvmOverloads constructor(
 
     /**
@@ -17,7 +20,7 @@ data class Lyrics @JvmOverloads constructor(
      * Optional synced lyrics.
      */
     val synced: SyncedLyrics? = null
-) {
+) : Serializable {
 
     val hasSynced
         get() = synced != null
@@ -26,12 +29,13 @@ data class Lyrics @JvmOverloads constructor(
     /**
      * Synced lyrics.
      */
+    @Model
     data class SyncedLyrics @JvmOverloads constructor(
         val lines: List<Line>,
         val artist: String,
         val title: String,
         val album: String? = null
-    ) {
+    ) : Serializable {
 
         fun buildAsLrcWithHeader() = buildString {
             append("[ar:").append(artist).append("]\n")
@@ -52,6 +56,7 @@ data class Lyrics @JvmOverloads constructor(
         /**
          * Single line of synced lyrics.
          */
+        @Model
         data class Line @JvmOverloads constructor(
 
             /**
@@ -68,6 +73,6 @@ data class Lyrics @JvmOverloads constructor(
              * Line text.
              */
             val text: String? = null
-        )
+        ) : Serializable
     }
 }

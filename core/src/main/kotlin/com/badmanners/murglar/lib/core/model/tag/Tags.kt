@@ -1,7 +1,9 @@
 package com.badmanners.murglar.lib.core.model.tag
 
 import com.badmanners.murglar.lib.core.model.album.AlbumType
+import com.badmanners.murglar.lib.core.utils.contract.Model
 import org.threeten.bp.LocalDate
+import java.io.Serializable
 import java.util.Locale
 import kotlin.math.pow
 
@@ -12,6 +14,7 @@ import kotlin.math.pow
  * See [wiki.hydrogenaud.io](https://wiki.hydrogenaud.io/index.php?title=Tag_Mapping),
  * [picard-docs.musicbrainz.org](https://picard-docs.musicbrainz.org/en/appendices/tag_mapping.html)
  */
+@Model
 data class Tags(
     val title: String,
     val subtitle: String? = null,
@@ -53,7 +56,7 @@ data class Tags(
      * If set to `true`, a downloaded file will not be re-tagged.
      */
     val fileAlreadyTagged: Boolean = false
-) {
+) : Serializable {
 
     val hasSubtitle: Boolean
         get() = !subtitle.isNullOrEmpty()

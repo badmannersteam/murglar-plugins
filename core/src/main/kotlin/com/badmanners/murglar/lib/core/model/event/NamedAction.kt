@@ -1,6 +1,8 @@
 package com.badmanners.murglar.lib.core.model.event
 
 import com.badmanners.murglar.lib.core.node.NodeResolver
+import com.badmanners.murglar.lib.core.utils.contract.Model
+import java.io.Serializable
 
 
 /**
@@ -8,6 +10,7 @@ import com.badmanners.murglar.lib.core.node.NodeResolver
  *
  * @see NodeResolver.handleEvent
  */
+@Model
 data class NamedAction(
 
     /**
@@ -19,4 +22,4 @@ data class NamedAction(
      * Action.
      */
     val action: CustomAction
-)
+) : Serializable
