@@ -1,6 +1,7 @@
 package com.badmanners.murglar.lib.core.network
 
-import com.badmanners.murglar.lib.core.utils.MurglarLibUtils
+import com.badmanners.murglar.lib.core.utils.MurglarLibUtils.getAndroidSdkVersion
+import com.badmanners.murglar.lib.core.utils.MurglarLibUtils.isAndroid
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -66,21 +67,28 @@ object ResponseConverters {
     }
 
     @JvmStatic
-    fun asJsonObject() = object : BaseResponseConverter<JsonObject>() {
-        override suspend fun convert(stream: InputStream, charset: Charset) = decodeFromStreamCompat<JsonObject>(stream)
-    }
+    fun asJsonObject() = Json.asModel<JsonObject>()
 
     @JvmStatic
-    fun asJsonArray() = object : BaseResponseConverter<JsonArray>() {
-        override suspend fun convert(stream: InputStream, charset: Charset) = decodeFromStreamCompat<JsonArray>(stream)
-    }
+    fun Json.asJsonObject() = asModel<JsonObject>()
 
+    @JvmStatic
+    fun asJsonArray() = Json.asModel<JsonArray>()
 
-    private inline fun <reified T> decodeFromStreamCompat(stream: InputStream) = when {
-        // https://github.com/Kotlin/kotlinx.serialization/issues/2457
-        MurglarLibUtils.isAndroid() && MurglarLibUtils.getAndroidSdkVersion()!! < 24 ->
-            Json.decodeFromString<T>(stream.readBytes().toString(Charsets.UTF_8))
+    @JvmStatic
+    fun Json.asJsonArray() = asModel<JsonArray>()
 
-        else -> Json.decodeFromStream<T>(stream)
+    @JvmStatic
+    inline fun <reified T> asModel() = Json.asModel<T>()
+
+    @JvmStatic
+    inline fun <reified T> Json.asModel() = object : BaseResponseConverter<T>() {
+        override suspend fun convert(stream: InputStream, charset: Charset) = when {
+            // https://github.com/Kotlin/kotlinx.serialization/issues/2457
+            isAndroid() && getAndroidSdkVersion()!! < 24 ->
+                decodeFromString<T>(stream.readBytes().toString(Charsets.UTF_8))
+
+            else -> decodeFromStream<T>(stream)
+        }
     }
 }
