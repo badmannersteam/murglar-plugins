@@ -23,6 +23,8 @@ object MediaId {
      */
     fun build(murglarId: String, vararg customIds: String) = sequenceOf(murglarId, *customIds).joinToString("_")
 
+    fun getServiceId(mediaId: String) = mediaId.substringBefore("_")
+
     /**
      * Parses list of custom ids from [MediaId] string representation.
      */
