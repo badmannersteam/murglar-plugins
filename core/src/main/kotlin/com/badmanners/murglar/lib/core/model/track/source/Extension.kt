@@ -24,6 +24,10 @@ enum class Extension {
 
     WEBM,
 
+    WEBA,
+
+    MKV,
+
     WMA,
 
     /**

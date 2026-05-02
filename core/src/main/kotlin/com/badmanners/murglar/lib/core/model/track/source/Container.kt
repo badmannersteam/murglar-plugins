@@ -20,6 +20,22 @@ enum class Container {
     MP4,
 
     /**
+     * Matroska container file.
+     *
+     * Corresponding [Source.extension] must be set to the actual audio track format, contained in the file,
+     * because client may demux the audio track from the container.
+     */
+    MKV,
+
+    /**
+     * WEBM (restricted subset of MKV) container file.
+     *
+     * Corresponding [Source.extension] must be set to the actual audio track format, contained in the file,
+     * because client may demux the audio track from the container.
+     */
+    WEBM,
+
+    /**
      * HLS stream.
      *
      * Corresponding [Source.extension] must be set to the actual audio track format, contained in the file,
