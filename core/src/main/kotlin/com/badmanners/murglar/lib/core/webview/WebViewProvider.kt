@@ -18,6 +18,7 @@ interface WebViewProvider {
      * @param domainsForCookiesSync list of domains for which cookies must be synced after login
      * from webview cookies store to the [NetworkMiddleware] impl cookies store
      * @param resolver              url load policy resolver
+     * @param inspector             requests inspector
      * @return true if successful, false if cancelled
      */
     suspend fun startWebView(
@@ -25,7 +26,8 @@ interface WebViewProvider {
         userAgent: String?,
         startUrl: String,
         domainsForCookiesSync: List<String>,
-        resolver: UrlLoadPolicyResolver
+        resolver: UrlLoadPolicyResolver,
+        inspector: RequestsInspector? = null
     ): Boolean
 
 
@@ -71,5 +73,43 @@ interface WebViewProvider {
          * Load url, sync cookies and close webview.
          */
         ALLOW_LOAD_AND_FINISH
+    }
+
+    /**
+     * Inspector for HTTP requests and responses during WebView navigation.
+     * Allows monitoring and analyzing network traffic within the WebView.
+     */
+    interface RequestsInspector {
+
+        /**
+         * Determines whether a request should be inspected.
+         *
+         * @param url the URL being requested with query parameters
+         * @param requestHeaders headers of the request
+         * @param requestBody request body content - json/form data/multipart/text/etc, except binary content
+         * @return true if the request should be inspected, false otherwise
+         */
+        fun shouldInspect(
+            url: String,
+            requestHeaders: Map<String, String>,
+            requestBody: String?
+        ): Boolean
+
+        /**
+         * Inspects a completed request and its response.
+         *
+         * @param url the URL that was requested with query parameters
+         * @param requestHeaders headers of the request
+         * @param requestBody request body content - json/form data/multipart/text/etc, except binary content
+         * @param responseHeaders headers of the response
+         * @param responseBody response body content - json/form data/multipart/text/etc, except binary content
+         */
+        fun inspect(
+            url: String,
+            requestHeaders: Map<String, String>,
+            requestBody: String?,
+            responseHeaders: Map<String, String>,
+            responseBody: String?
+        )
     }
 }
