@@ -304,7 +304,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
         else
             emptyMap()
 
-    override suspend fun handleEvent(event: Event, node: Node) {
+    override suspend fun handleEvent(event: Event, node: Node, parentNode: Node?) {
         requireBelongsToThisResolver(node.nodePath)
         require(isAvailable)
 
@@ -312,7 +312,7 @@ abstract class BaseNodeResolver<M : Murglar<*>, ME : Messages>(
             it.nodeType == node.nodeType && it.eventClass == event::class
         } ?: error("No events handling configuration found for ${node.nodeType} and ${event::class.simpleName}!")
 
-        eventHandlerConfiguration.eventHandler.run { node.handleEvent(event) }
+        eventHandlerConfiguration.eventHandler.run { node.handleEvent(event, parentNode) }
     }
 
     @Suppress("UNCHECKED_CAST")

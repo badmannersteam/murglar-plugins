@@ -186,10 +186,11 @@ interface NodeResolver {
      *
      * @param event event
      * @param node node, related to event
+     * @param parentNode parent node of node, related to event (radio/album/etc)
      * @throws UnsupportedOperationException if event handling not supported
      * @see Event
      */
-    suspend fun handleEvent(event: Event, node: Node)
+    suspend fun handleEvent(event: Event, node: Node, parentNode: Node? = null)
 
     /**
      * Returns all possible tracks by media ids.

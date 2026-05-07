@@ -223,7 +223,7 @@ fun interface LikeFunction {
 }
 
 fun interface EventHandler<E : Event> {
-    suspend fun Node.handleEvent(event: E)
+    suspend fun Node.handleEvent(event: E, parentNode: Node?)
 }
 
 fun interface RelatedNodePathsGenerator {

@@ -65,7 +65,7 @@ class StubNodeResolver(
 
     override val supportedEventsMapping = emptyMap<String, Set<KClass<out Event>>>()
 
-    override suspend fun handleEvent(event: Event, node: Node) =
+    override suspend fun handleEvent(event: Event, node: Node, parentNode: Node?) =
         throw UnsupportedOperationException("Event handling not supported")
 
     override suspend fun getTracksByMediaIds(mediaIds: List<String>): List<BaseTrack> = emptyList()
