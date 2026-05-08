@@ -55,6 +55,10 @@ allOpen {
     annotation("com.badmanners.murglar.lib.core.utils.contract.Model")
 }
 
+shadow {
+    addShadowVariantIntoJavaComponent = false
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }

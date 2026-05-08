@@ -1,13 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import java.net.URI
 import java.util.Properties
 
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
 }
 
 group = "com.github.badmannersteam.murglar-plugins"
@@ -75,7 +73,7 @@ android {
         release {
             signingConfig = config
             isMinifyEnabled = true
-            proguardFiles += getDefaultProguardFile("proguard-android.txt")
+            proguardFiles += getDefaultProguardFile("proguard-android-optimize.txt")
         }
     }
 
@@ -152,10 +150,12 @@ gradle.afterProject {
                 "pluginLibVersion" to Versions.murglarPluginsMajor
             )
         }
+    }
 
-        applicationVariants.all {
-            outputs.all {
-                (this as BaseVariantOutputImpl).outputFileName = pluginExtension.apkName
+    androidComponents {
+        onVariants { variant ->
+            variant.outputs.forEach { output ->
+                output.outputFileName.set(pluginExtension.apkName)
             }
         }
     }

@@ -20,16 +20,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    testVariants.all {
-        mergedFlavor.manifestPlaceholders += listOf(
-            "pluginId", "pluginName", "pluginFullName", "pluginType", "pluginEntryPointClass", "pluginVersion", "pluginLibVersion"
-        ).associateWith { "" }
-    }
-
     publishing {
         singleVariant("release") {
             withSourcesJar()
         }
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.androidTest?.manifestPlaceholders?.putAll(
+            listOf(
+                "pluginId", "pluginName", "pluginFullName", "pluginType",
+                "pluginEntryPointClass", "pluginVersion", "pluginLibVersion"
+            ).associateWith { "" }
+        )
     }
 }
 

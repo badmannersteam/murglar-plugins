@@ -1,5 +1,6 @@
 # https://www.guardsquare.com/en/products/proguard/manual/usage
 -dontobfuscate
+-dontoptimize
 
 -keepattributes Exceptions, Signature, InnerClasses, *Annotation*, SourceFile, LineNumberTable, EnclosingMethod
 

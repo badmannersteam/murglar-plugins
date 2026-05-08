@@ -23,17 +23,17 @@ dependencyResolutionManagement {
         create("libs") {
             version("murglar-plugins", "7.2-SNAPSHOT")
 
-            version("kotlin", "2.2.21")
-            version("android-build-plugin", "8.13.1")
+            version("kotlin", "2.3.21")
+            version("android-build-plugin", "9.2.1")
 
             version("min-sdk", "21")
-            version("target-sdk", "35")
-            version("build-tools", "35.0.0")
+            version("target-sdk", "36")
+            version("build-tools", "36.1.0")
 
             library("kotlin-stdlib", "org.jetbrains.kotlin", "kotlin-stdlib").versionRef("kotlin")
             library("kotlinx-coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").version("1.10.2")
-            library("kotlinx-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").version("1.8.1")
-            library("time-backport", "org.threeten", "threetenbp").version("1.7.1")
+            library("kotlinx-json", "org.jetbrains.kotlinx", "kotlinx-serialization-json").version("1.11.0")
+            library("time-backport", "org.threeten", "threetenbp").version("1.7.2")
             // 1.9 uses java 8 features, don't update
             library("commons-text", "org.apache.commons", "commons-text").version("1.8")
             library("fuzzywuzzy", "me.xdrop", "fuzzywuzzy").version("1.4.0")
@@ -43,12 +43,12 @@ dependencyResolutionManagement {
             library("kotlin-allopen", "org.jetbrains.kotlin", "kotlin-allopen").versionRef("kotlin")
             library("kotlin-serialization", "org.jetbrains.kotlin", "kotlin-serialization").versionRef("kotlin")
             library("android-build-plugin", "com.android.tools.build", "gradle").versionRef("android-build-plugin")
-            library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").version("8.3.6")
+            library("shadow", "com.gradleup.shadow", "shadow-gradle-plugin").version("9.4.1")
 
             plugin("kotlin", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
             plugin("kotlin-noarg", "org.jetbrains.kotlin.plugin.noarg").versionRef("kotlin")
             plugin("kotlin-allopen", "org.jetbrains.kotlin.plugin.allopen").versionRef("kotlin")
-            plugin("buildconfig", "com.github.gmazzo.buildconfig").version("5.5.4")
+            plugin("buildconfig", "com.github.gmazzo.buildconfig").version("6.0.9")
             plugin("android-library-plugin", "com.android.library").versionRef("android-build-plugin")
         }
     }
