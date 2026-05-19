@@ -2,7 +2,9 @@ package com.badmanners.murglar.lib.core.model.track.source
 
 
 /**
- * Approximate [Source] bitrate.
+ * [Source] bitrate.
+ *
+ * Exact if known or [B_UNKNOWN] otherwise.
  */
 enum class Bitrate(val value: Int?) {
 
@@ -25,20 +27,18 @@ enum class Bitrate(val value: Int?) {
 
     B_320(320),
 
-    /**
-     * For FLAC/WAV/etc.
-     */
+    B_LOSSLESS(null),
+
     B_HI_RES(null),
 
     B_UNKNOWN(null);
 
 
     val text: String
-        get() {
-            return when (this) {
-                B_HI_RES -> "Hi-Res"
-                B_UNKNOWN -> "???"
-                else -> value.toString()
-            }
+        get() = when (this) {
+            B_LOSSLESS -> "Lossless"
+            B_HI_RES -> "Hi-Res"
+            B_UNKNOWN -> "???"
+            else -> "$value kbps"
         }
 }

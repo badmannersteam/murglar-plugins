@@ -8,9 +8,8 @@ import com.badmanners.murglar.lib.core.model.node.Node
 import com.badmanners.murglar.lib.core.model.tag.Lyrics
 import com.badmanners.murglar.lib.core.model.tag.Tags
 import com.badmanners.murglar.lib.core.model.track.BaseTrack
-import com.badmanners.murglar.lib.core.model.track.source.Bitrate
-import com.badmanners.murglar.lib.core.model.track.source.Extension
 import com.badmanners.murglar.lib.core.model.track.source.Source
+import com.badmanners.murglar.lib.core.model.track.source.SourceFormat
 import com.badmanners.murglar.lib.core.node.NodeResolver
 import com.badmanners.murglar.lib.core.preference.Preference
 import com.badmanners.murglar.lib.core.utils.RateLimit
@@ -63,7 +62,7 @@ interface Murglar<Track : BaseTrack> {
     /**
      *  Descending list of all possible formats, that [Source]s from this [Murglar] can contain.
      */
-    val possibleFormats: List<Pair<Extension, Bitrate>>
+    val possibleFormats: List<SourceFormat>
 
     /**
      * List of service rate limits.
