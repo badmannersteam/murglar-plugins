@@ -32,11 +32,10 @@ interface Decryptor<Track : BaseTrack> {
      * @param content track content buffer, implementation must doesn't modify its content.
      * @param offset  start offset (in bytes) in the content buffer.
      * @param length  size of chunk (in bytes), that must be decrypted.
-     * @param track   track, which content must be decrypted.
-     * @param source  **resolved** source of track, which content must be decrypted.
+     * @param url     url of track, which content must be decrypted. May contain parameters, required for decryption.
      * @return new byte array with size from **0** (if no chunks decrypted due to errors)
      * to **length** (if all chunks decrypted successfully).
      * @throws UnsupportedOperationException if content is not encrypted.
      */
-    suspend fun decrypt(content: ByteArray, offset: Int, length: Int, track: Track, source: Source): ByteArray
+    suspend fun decrypt(content: ByteArray, offset: Int, length: Int, url: String): ByteArray
 }
