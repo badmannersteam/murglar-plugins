@@ -24,9 +24,9 @@ Provider `AUTHORITY` is `com.badmanners.murglar.provider.nodes`.
 
 | Method                     | Purpose                                                                  |
 |----------------------------|--------------------------------------------------------------------------|
-| `android:resetCache`       | Requests cache reset of a subtree before the next query.                 |
-| `android:getAncestors`     | Backport of `findDocumentPath()` for any API version.                    |
-| `android:registerOpenMode` | Registers `PIPE` or `SEEKABLE_SOCKET` open mode for the calling package. |
+| `resetCache`       | Requests cache reset of a subtree before the next query.                 |
+| `getAncestors`     | Backport of `findDocumentPath()` for any API version.                    |
+| `registerOpenMode` | Registers `PIPE` or `SEEKABLE_SOCKET` open mode for the calling package. |
 
 ### 1.3 Root cursor columns
 
@@ -332,7 +332,7 @@ Reset is explicit and should be requested only when you really need to reload re
 fun resetCache(contentResolver: ContentResolver, documentUri: Uri) {
     contentResolver.call(
         Uri.parse("content://$AUTHORITY"),
-        "android:resetCache",
+        "resetCache",
         documentUri.toString(),
         null
     )
@@ -353,13 +353,13 @@ Returns a `path` of the document for showing in the UI - from tree root to direc
 `[My artists, Xxx, Albums, Yyy]`.
 
 `findDocumentPath()` is available on API 26+, but for maximum compatibility use your own stored ancestry or
-`android:getAncestors`
+`getAncestors`
 
 ```kotlin
 fun getAncestors(contentResolver: ContentResolver, documentUri: Uri): List<String> {
     val out = contentResolver.call(
         Uri.parse("content://$AUTHORITY"),
-        "android:getAncestors",
+        "getAncestors",
         documentUri.toString(),
         null
     )
@@ -427,7 +427,7 @@ If your playback stack supports `SEEKABLE_SOCKET` mode, register it before openi
 fun registerSeekableMode(contentResolver: ContentResolver) {
     contentResolver.call(
         Uri.parse("content://$AUTHORITY"),
-        "android:registerOpenMode",
+        "registerOpenMode",
         "SEEKABLE_SOCKET", // or "PIPE"
         null
     )
